@@ -106,6 +106,9 @@ Convención de carpetas: `guiones/<slug>/` (guion + proyecto) y `out/<slug>/` (e
 11. **Short**: 9:16 nativo (no recorte), mismo lenguaje, con la voz del gancho + un cierre propio
     ("Sígueme para más, y mira el video completo en el enlace de mi perfil"). Zonas seguras: nada
     crítico en el 15 % superior, el 22 % inferior ni los 140 px de la derecha.
+    **CTA en pantalla = acción + para qué:** nunca un chip solo con "Comenta X" o "Sígueme";
+    siempre lo que recibe la persona ("Comenta SKILL y te envío gratis el skill para hacer tus
+    videos"). Aplica a Shorts, cierres y pantalla final del largo.
 12. **Publicación** (`guiones/<slug>/publicacion/` + `out/<slug>/publicacion.md`; plantillas en
     `plantillas/publicacion/`: `portadas.html` (vistas mini / short / centro / grid, es un ejemplo:
     cambiar textos, colores y personaje), `capturar.mjs` (Chrome headless con reintento) y
