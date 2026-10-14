@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Miniatura y portadas (EJEMPLO: cambiar textos, colores y personaje)</title>
+<!-- ?f=mini  → miniatura YouTube/LinkedIn 1280x720
+     ?f=short → portada de Short 1080x1920 (TikTok, Reels, Shorts, Facebook)
+     Servir la raíz del repo por HTTP (python -m http.server 8765) y capturar con
+     Chrome headless: node guiones/<slug>/publicacion/capturar.mjs -->
+<style>
+  @font-face { font-family: "Anton"; src: url("../assets/fonts/Anton-Regular.ttf"); }
+  @font-face { font-family: "Poppins"; src: url("../assets/fonts/Poppins-Black.ttf"); font-weight: 900; }
+  @font-face { font-family: "JBM"; src: url("../assets/fonts/JetBrainsMono-ExtraBold.ttf"); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { overflow: hidden; background: #050505; }
+  .lienzo { position: relative; overflow: hidden; background: #08111f; color: #fff; font-family: "Poppins", sans-serif; }
+  .puntos { position: absolute; inset: 0; opacity: .22; background-image: radial-gradient(#a3e635 2px, transparent 2.6px); background-size: 26px 26px;
+    -webkit-mask: radial-gradient(ellipse at 60% 45%, #000 0, transparent 72%); mask: radial-gradient(ellipse at 60% 45%, #000 0, transparent 72%); }
+  .foco { position: absolute; border-radius: 50%; background: #a3e635; filter: blur(110px); opacity: .25; }
+  .pj { position: absolute; }
+  .pj img { width: 100%; display: block; filter: drop-shadow(0 20px 40px rgba(0,0,0,.6)); }
+  .sw { position: absolute; border-radius: 999px; background: #a3e635; border: 10px solid #fff; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+  .sw i { position: absolute; top: 50%; right: 14px; transform: translateY(-50%); border-radius: 50%; background: #fff; }
+  .chip { position: absolute; background: #fff; color: #111; font-weight: 900; border-radius: 22px 22px 22px 0; white-space: nowrap; }
+  .num { position: absolute; font-family: "Anton", sans-serif; color: #a3e635; line-height: 1; }
+  .t1 { position: absolute; font-family: "Anton", sans-serif; line-height: .95; color: #fff; white-space: nowrap; }
+  .t1 b { color: #a3e635; font-weight: 400; }
+  .tag { position: absolute; background: #e3141f; color: #fff; font-family: "Anton", sans-serif; transform: rotate(-4deg); white-space: nowrap; border: 6px solid #fff; }
+  .marca { position: absolute; font-family: "JBM", monospace; color: #a3e635; letter-spacing: 4px; }
+  #mini { width: 1280px; height: 720px; display: none; }
+  #short { width: 1080px; height: 1920px; display: none; }
+</style>
+</head>
+<body>
+<!-- Miniatura: personaje señalando al texto, interruptor encendido y la cifra 0,91 -->
+<div class="lienzo" id="mini">
+  <div class="puntos"></div>
+  <div class="foco" style="left:700px;top:-120px;width:620px;height:620px"></div>
+  <div class="pj" style="left:-30px;top:150px;width:520px"><img src="../assets/img/pj-senala.png" alt="" /></div>
+  <div class="t1" style="left:470px;top:60px;font-size:96px">ESTA IA <b>NO HABLA</b></div>
+  <div class="t1" style="left:466px;top:170px;font-size:250px;color:#a3e635">DECIDE</div>
+  <div class="chip" style="left:500px;top:470px;font-size:40px;padding:16px 28px">¿Leo esta hoja de vida?</div>
+  <div class="num" style="left:900px;top:545px;font-size:150px">0,91</div>
+  <div class="sw" style="left:520px;top:575px;width:240px;height:116px"><i style="width:80px;height:80px"></i></div>
+  <div class="tag" style="left:930px;top:400px;font-size:46px;padding:4px 20px">TUTORIAL</div>
+</div>
+
+<!-- Portada del Short (zonas seguras: nada crítico arriba del 15 % ni abajo del 22 %) -->
+<div class="lienzo" id="short">
+  <div class="puntos"></div>
+  <div class="foco" style="left:300px;top:300px;width:800px;height:800px"></div>
+  <div class="marca" style="left:80px;top:320px;font-size:34px">TU·CANAL / TUTORIAL</div>
+  <div class="t1" style="left:76px;top:380px;font-size:150px">ESTA IA</div>
+  <div class="t1" style="left:76px;top:530px;font-size:150px"><b>NO HABLA…</b></div>
+  <div class="t1" style="left:70px;top:690px;font-size:300px;color:#a3e635">DECIDE</div>
+  <div class="chip" style="left:80px;top:1030px;font-size:48px;padding:18px 32px">¿Este correo es spam?</div>
+  <div class="num" style="left:80px;top:1150px;font-size:230px">0,91</div>
+  <div class="sw" style="left:500px;top:1200px;width:300px;height:144px"><i style="width:100px;height:100px"></i></div>
+  <div class="pj" style="left:440px;top:1290px;width:560px"><img src="../assets/img/pj-celebra.png" alt="" /></div>
+</div>
+<!-- Portada TikTok / Instagram (1080x1920): todo lo importante dentro de la franja central 4:5
+     (y 285–1635), que también sobrevive al recorte 3:4 de la cuadrícula del perfil -->
+<div class="lienzo" id="centro">
+  <div class="puntos"></div>
+  <div class="foco" style="left:250px;top:500px;width:700px;height:700px"></div>
+  <div class="marca" style="left:80px;top:330px;font-size:30px">TU·CANAL / TUTORIAL</div>
+  <div class="t1" style="left:76px;top:380px;font-size:128px">ESTA IA <b>NO HABLA…</b></div>
+  <div class="t1" style="left:70px;top:520px;font-size:290px;color:#a3e635">DECIDE</div>
+  <div class="chip" style="left:80px;top:860px;font-size:44px;padding:16px 30px">¿Este correo es spam?</div>
+  <div class="num" style="left:80px;top:970px;font-size:220px">0,91</div>
+  <div class="sw" style="left:90px;top:1240px;width:260px;height:126px"><i style="width:88px;height:88px"></i></div>
+  <div class="pj" style="left:520px;top:900px;width:520px;height:735px;overflow:hidden"><img src="../assets/img/pj-celebra.png" alt="" /></div>
+</div>
+<!-- Cuadrícula de Instagram (1080x1440, 3:4): para subirla aparte si la app lo permite -->
+<div class="lienzo" id="grid">
+  <div class="puntos"></div>
+  <div class="foco" style="left:250px;top:300px;width:700px;height:700px"></div>
+  <div class="marca" style="left:80px;top:70px;font-size:30px">TU·CANAL / TUTORIAL</div>
+  <div class="t1" style="left:76px;top:120px;font-size:128px">ESTA IA <b>NO HABLA…</b></div>
+  <div class="t1" style="left:70px;top:260px;font-size:290px;color:#a3e635">DECIDE</div>
+  <div class="chip" style="left:80px;top:600px;font-size:44px;padding:16px 30px">¿Este correo es spam?</div>
+  <div class="num" style="left:80px;top:710px;font-size:220px">0,91</div>
+  <div class="sw" style="left:90px;top:980px;width:260px;height:126px"><i style="width:88px;height:88px"></i></div>
+  <div class="pj" style="left:520px;top:640px;width:520px;height:800px;overflow:hidden"><img src="../assets/img/pj-celebra.png" alt="" /></div>
+</div>
+<style> #centro { width: 1080px; height: 1920px; display: none; } #grid { width: 1080px; height: 1440px; display: none; } </style>
+<script>
+  const f = new URLSearchParams(location.search).get("f") || "mini";
+  document.getElementById(f).style.display = "block";
+</script>
+</body>
+</html>

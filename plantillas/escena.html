@@ -1,0 +1,34 @@
+<template>
+<style>
+  /* Plantilla de escena edwin-motion. Reemplazar NN por el número de escena,
+     DUR por su duración (voz + 0,8 s) y las rutas de fuentes según la carpeta. */
+  @font-face { font-family: "Anton"; src: url("../../assets/fonts/Anton-Regular.ttf"); }
+  @font-face { font-family: "Poppins"; src: url("../../assets/fonts/Poppins-Black.ttf"); font-weight: 900; }
+  @font-face { font-family: "JBM"; src: url("../../assets/fonts/JetBrainsMono-Bold.ttf"); }
+  #root { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; background: #050505; color: #fff; font-family: "Poppins", sans-serif; }
+  #fNN-stage { position: absolute; inset: 0; }
+  .fNN-panel { position: absolute; inset: 0; }        /* un panel por beat; corte duro entre paneles */
+  .fNN-panel ~ .fNN-panel { visibility: hidden; }  /* solo el primero visible al inicio; los demás entran con CORTE */
+</style>
+<div id="root" data-composition-id="fNN" data-width="1920" data-height="1080">
+  <div id="fNN-stage" class="clip" data-start="0" data-duration="DUR" data-track-index="0">
+    <div class="fNN-panel" id="fNN-p1">…</div>
+    <div class="fNN-panel" id="fNN-p2">…</div>
+  </div>
+</div>
+<script>
+(function () {
+  window.__timelines = window.__timelines || {};
+  // Tiempos de palabras (assets/audio/NN.words.json): copiar aquí los anclas que se usan.
+  // const W = { palabra1: 1.42, palabra2: 3.68 };
+  const tl = gsap.timeline({ paused: true });
+  const CORTE = (fuera, dentro, t) => { tl.set(fuera, { autoAlpha: 0 }, t); tl.set(dentro, { autoAlpha: 1 }, t); };
+  const GOLPE = (sel, t) => tl.fromTo(sel, { opacity: 0, scale: 2.4 }, { opacity: 1, scale: 1, duration: 0.18, ease: "power4.in" }, t);
+  const TEMBLOR = (t, k = 1) => tl.fromTo("#fNN-stage", { x: 0, y: 0 }, { keyframes: [
+    { x: 16 * k, y: -9 * k, duration: 0.05 }, { x: -12 * k, y: 8 * k, duration: 0.07 },
+    { x: 6 * k, y: -4 * k, duration: 0.08 }, { x: 0, y: 0, duration: 0.12 }], immediateRender: false }, t);
+  // … beats …
+  window.__timelines["fNN"] = tl;
+})();
+</script>
+</template>
