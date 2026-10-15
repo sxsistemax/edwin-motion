@@ -1,6 +1,6 @@
 ---
 name: edwin-motion
-description: Lenguaje de animación para videos de motion graphics con voz IA, largos (16:9) y Shorts (9:16), hechos con HyperFrames — tipografía editorial que golpea, objetos que interactúan con el texto, tableros/recibos con contadores y presentador con etiquetas, todo sincronizado palabra por palabra con la voz, con sonido en cada movimiento, más el paquete de publicación por red (subtítulos, miniatura, portada por red y video 1:1 para Instagram). Usar en cada video nuevo (o al rehacer uno) para mantener la consistencia del movimiento, aunque cambien fondos, colores y gráficos.
+description: Lenguaje de animación para videos de motion graphics con voz IA, largos (16:9) y Shorts (9:16), hechos con HyperFrames — tipografía editorial que golpea, objetos que interactúan con el texto, tableros/recibos con contadores y presentador con etiquetas, todo sincronizado palabra por palabra con la voz, con sonido en cada movimiento, más el paquete de publicación por red (subtítulos, miniatura, portada por red). Usar en cada video nuevo (o al rehacer uno) para mantener la consistencia del movimiento, aunque cambien fondos, colores y gráficos.
 ---
 
 # edwin-motion — cómo se mueven los videos
@@ -101,8 +101,7 @@ Convención de carpetas: `guiones/<slug>/` (guion + proyecto) y `out/<slug>/` (e
 10. **Render** (`npx hyperframes render -o out/<slug>/largo/<slug>.mp4`), verificar
     duración/volumen/cuadros. **Carpeta de entrega:** `out/<slug>/publicacion.md` en la raíz y una
     carpeta por pieza con su video y su miniatura/portada: `largo/` (mp4, miniatura, SRT,
-    capítulos), `short/` (mp4 + portadas por red), `short-instagram/` (mp4 1:1 + portada 1:1);
-    varios Shorts → `short-1-<tema>/`, `short-2-…`.
+    capítulos), `short/` (mp4 + portadas por red); varios Shorts → `short-1-<tema>/`, `short-2-…`.
 11. **Short**: 9:16 nativo (no recorte), mismo lenguaje, con la voz del gancho + un cierre propio
     ("Sígueme para más, y mira el video completo en el enlace de mi perfil"). Zonas seguras: nada
     crítico en el 15 % superior, el 22 % inferior ni los 140 px de la derecha.
@@ -119,16 +118,8 @@ Convención de carpetas: `guiones/<slug>/` (guion + proyecto) y `out/<slug>/` (e
     - TikTok: 1080×1920 con todo lo importante en la franja central (y 285–1635), porque el perfil la recorta a 3:4.
     - Instagram / Facebook Reels: 1080×1920 con todo dentro de la franja central 4:5 (y 285–1635) y
       además `portada-instagram-cuadricula.png` 1080×1440 (3:4) para la vista del perfil.
-    - **Video para Instagram 1:1** (`out/<slug>/short-instagram/<slug>-short-instagram-1x1.mp4`):
-      proyecto `guiones/<slug>/short-ig/` = copia del Short con root, hosts y composiciones en
-      1080×1350 y el layout RE-COMPUESTO para 4:5 (contenido en x 64–1016, y 64–1286, centrado,
-      mismos tiempos/textos/audio/animaciones; **no** recortar el 9:16) → render a un archivo
-      temporal → 1:1 con el 4:5 entero al centro (864×1080) y los lados con el mismo video
-      ampliado y desenfocado:
-      `ffmpeg -i <temporal 4:5> -filter_complex "[0:v]split[a][b];[a]scale=1080:1080:force_original_aspect_ratio=increase,crop=1080:1080,gblur=sigma=40,eq=brightness=-0.15[fondo];[b]scale=864:1080[fr];[fondo][fr]overlay=108:0" -c:v libx264 -profile:v high -pix_fmt yuv420p -r 30 -crf 18 -c:a aac -b:a 192k -ar 48000 -movflags +faststart out/<slug>/short-instagram/<slug>-short-instagram-1x1.mp4`
-      (borrar el temporal). Portada `portada-instagram-1x1.png` (la 4:5 escalada al centro con
-      fondo desenfocado). Revisar capturas cada 2 s del 4:5 antes de armar el 1:1.
-      TikTok, YouTube Shorts y Facebook usan el 9:16.
+    - **Solo dos videos por tema: largo (16:9) y Short (9:16).** El mismo Short 9:16 va a YouTube
+      Shorts, TikTok, Instagram Reels y Facebook; no hace falta versión 1:1 ni 4:5 para Instagram.
     Textos por red (YouTube, LinkedIn, Shorts, TikTok, Reels, Facebook) sin afirmar que algo se
     probó si fue ilustrativo y sin prometer cosas a nombre del creador.
 

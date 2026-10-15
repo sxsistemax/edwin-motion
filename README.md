@@ -30,7 +30,7 @@ guion.md ──► voz.ts ──► NN.mp3 + NN.words.json (segundo exacto de ca
                               ▼
           npx hyperframes render ──► video.mp4
                               │
-          subtitulos.mjs + portadas.html ──► SRT, capítulos, miniatura, portada por red, 1:1 para Instagram
+          subtitulos.mjs + portadas.html ──► SRT, capítulos, miniatura, portada por red
 ```
 
 Tú escribes o apruebas el guion, revisas las capturas y decides. El agente programa las escenas.
@@ -44,7 +44,7 @@ Tú escribes o apruebas el guion, revisas las capturas y decides. El agente prog
 | [ElevenLabs](https://elevenlabs.io) | Voz con tiempos por palabra, clon de tu voz, efectos de sonido | Desde el plan Starter |
 | [GSAP](https://gsap.com) | Animación (lo carga cada escena) | Gratis |
 | [Node.js](https://nodejs.org) 20+ | Correr los scripts (`npx tsx` para los .ts) | Gratis |
-| [ffmpeg](https://ffmpeg.org) | Audio, video 1:1, recortes | Gratis |
+| [ffmpeg](https://ffmpeg.org) | Audio, recortes | Gratis |
 | [Google Chrome](https://www.google.com/chrome/) | Sonido automático y capturas de portadas | Gratis |
 | [Python](https://www.python.org) + [Pillow](https://python-pillow.org) | Solo si usas presentador con personaje | Gratis |
 | [MusicGen](https://huggingface.co/facebook/musicgen-small) (opcional) | Música de fondo local, vía el skill `media-use` de HyperFrames | Gratis |
