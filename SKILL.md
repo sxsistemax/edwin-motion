@@ -122,6 +122,19 @@ Convención de carpetas: `guiones/<slug>/` (guion + proyecto) y `out/<slug>/` (e
       Shorts, TikTok, Instagram Reels y Facebook; no hace falta versión 1:1 ni 4:5 para Instagram.
     Textos por red (YouTube, LinkedIn, Shorts, TikTok, Reels, Facebook) sin afirmar que algo se
     probó si fue ilustrativo y sin prometer cosas a nombre del creador.
+    **Títulos** (ejemplo: "Olvida ChatGPT: esta IA no escribe, DECIDE (tutorial JEV)"):
+    - Sensacionalistas, de curiosidad: contraste con algo conocido ("Olvida ChatGPT"), negación + giro
+      ("no escribe… DECIDE"), una palabra clave en MAYÚSCULAS. Si el video enseña, que se note
+      ("tutorial", "aprende a usar…").
+    - Cortos: ≤ 60 caracteres para que YouTube no los corte.
+    - Gancho, no mentira: nada que el video desmienta sin aclararlo; cifras no confirmadas van
+      atribuidas en la descripción; no prometer resultados.
+    - **Proponer 3 opciones y esperar que el creador elija** antes de escribirlas en los archivos.
+    - El título elegido manda en el paquete de los videos: título del largo y del Short, primera
+      línea de cada texto por red, miniatura y portadas por red. Si cambia el título, se regeneran
+      esas imágenes (`capturar.mjs`) y se copian a `out/<slug>/`.
+    - **Un carrusel, si se hace, NO usa este título**: lleva su propia portada y su propio texto,
+      para que no se confunda con el video.
 
 ## 4. Contrato técnico de cada escena
 
