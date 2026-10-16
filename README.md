@@ -95,6 +95,7 @@ edwin-motion/
 │   ├── escena.html             plantilla de una escena (HyperFrames + GSAP)
 │   ├── armar.mjs               monta el video largo: escenas, voces, música, efectos, destellos
 │   └── publicacion/            subtítulos SRT + capítulos, miniatura y portadas por red
+│                               (los títulos siguen las reglas de SKILL.md §3, paso 12)
 ├── scripts/
 │   ├── voz.ts                  narración por bloques con ElevenLabs + tiempos por palabra
 │   ├── sonidos.mjs             pone sonido solo a cada movimiento de las escenas
@@ -132,6 +133,13 @@ Un video largo de ~8 minutos: la voz del video "Así hago mis videos" (7.579 car
 - **Créditos.** La voz y los efectos nuevos consumen créditos de ElevenLabs: usa `--contar` antes.
 - `golpe.mp3` y `grieta.mp3` no vienen en el repo porque salen de efectos de Pixabay que trae
   HyperFrames; `scripts/sfx-base.mjs` los arma desde tu propia instalación.
+
+## Versiones
+
+Cada cambio del skill sale como versión en [Releases](https://github.com/sxsistemax/edwin-motion/releases),
+con sus notas de cambios. Descarga directa de la última:
+[`edwin-motion.zip`](https://github.com/sxsistemax/edwin-motion/releases/latest/download/edwin-motion.zip)
+(descomprímelo en `~/.claude/skills/`). Si lo instalaste con `git clone`, actualízalo con `git pull`.
 
 ## Créditos y licencia
 
