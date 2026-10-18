@@ -1,6 +1,6 @@
 # edwin-motion
 
-**Skill de Claude Code para hacer videos de motion graphics con IA**, sin cámara y sin animar a
+**Skill de Claude Code (y de Codex, Gemini CLI, Hermes y cualquier agente con skills) para hacer videos de motion graphics con IA**, sin cámara y sin animar a
 mano: guion → voz con tiempos por palabra → escenas en HTML animadas con GSAP → sonido automático
 → render → paquete de publicación para cada red.
 
@@ -102,7 +102,7 @@ node ~/.claude/skills/edwin-motion/scripts/biblioteca.mjs [buscar <texto> | usar
 
 | Herramienta | Para qué | Costo |
 |---|---|---|
-| [Claude Code](https://claude.com/claude-code) | El agente que escribe las escenas siguiendo este skill | Suscripción de Claude |
+| [Claude Code](https://claude.com/claude-code) u otro agente con skills (Codex, Gemini CLI, Hermes…) | El agente que escribe las escenas siguiendo este skill | Suscripción del agente |
 | [HyperFrames](https://github.com/heygen-com/hyperframes) (HeyGen) y sus skills | Escenas en HTML, revisión y render | Gratis |
 | [ElevenLabs](https://elevenlabs.io) | Voz con tiempos por palabra, clon de tu voz, efectos de sonido | Desde el plan Starter |
 | [GSAP](https://gsap.com) | Animación (lo carga cada escena) | Gratis |
@@ -116,7 +116,44 @@ node ~/.claude/skills/edwin-motion/scripts/biblioteca.mjs [buscar <texto> | usar
 | [fal.ai](https://fal.ai) (opcional) | Imágenes IA del modo `imagen` | Por imagen (≈ USD 0,04) |
 | Fuentes [Anton](https://fonts.google.com/specimen/Anton), [Poppins](https://fonts.google.com/specimen/Poppins), [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono), [Source Serif 4](https://fonts.google.com/specimen/Source+Serif+4) | Tipografía base | Gratis |
 
-## Instalación
+## Funciona con otros agentes
+
+El skill sigue el formato estándar de skills (`SKILL.md` + carpetas), así que no es solo para
+Claude Code: sirve en cualquier agente que lea skills, como **Codex**, **Gemini CLI**, **Hermes
+Agent**, Cursor, OpenCode o GitHub Copilot. La forma más fácil de instalarlo en el que uses es la
+CLI [`skills`](https://www.npmjs.com/package/skills), que lo copia a la carpeta de cada agente:
+
+```bash
+npx skills add sxsistemax/edwin-motion -g                     # pregunta en qué agentes instalarlo
+npx skills add sxsistemax/edwin-motion -g -a codex             # solo Codex       (~/.agents/skills/)
+npx skills add sxsistemax/edwin-motion -g -a gemini-cli        # solo Gemini CLI  (~/.gemini/skills/)
+npx skills add sxsistemax/edwin-motion -g -a hermes-agent      # solo Hermes      (~/.hermes/skills/)
+npx skills add sxsistemax/edwin-motion -g -a '*'               # todos los agentes que tengas
+```
+
+Haz lo mismo con los skills de HyperFrames (`npx skills add heygen-com/hyperframes -g -a <agente>`).
+En los agentes sin comandos con barra, pídelo por su nombre: *"usa el skill edwin-motion en modo
+guion para el tema …"*. Los comandos de este README usan la ruta de Claude Code
+(`~/.claude/skills/edwin-motion/`); en otro agente, cámbiala por la carpeta donde quedó instalado.
+
+## Pídele al agente que lo instale
+
+No hace falta correr los comandos tú mismo: el agente puede instalar y configurar todo, y te pide
+solo lo que es tuyo (las llaves de ElevenLabs y tu voz). Por ejemplo, en Claude Code:
+
+```text
+> Instala y configura el skill https://github.com/sxsistemax/edwin-motion siguiendo su README:
+  revisa qué tengo de la base (Node.js 20+, git, ffmpeg, Chrome, Python) e instala lo que falte,
+  agrega los skills de HyperFrames y edwin-motion, ayúdame a dejar ELEVENLABS_API_KEY y
+  ELEVENLABS_VOICE como variables de entorno, y al final corre npx hyperframes doctor y dime
+  qué quedó listo y qué falta.
+```
+
+Según los permisos de tu agente, te pide aprobar cada comando antes de correrlo, y al final te dice qué se instaló.
+El mismo pedido sirve en Codex, Gemini CLI o Hermes cambiando "skills de Claude Code" por los de
+ese agente.
+
+## Instalación manual
 
 ```bash
 # 1. Skills oficiales de HyperFrames (este skill se apoya en ellos)

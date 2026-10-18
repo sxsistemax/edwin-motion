@@ -70,6 +70,12 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
    Después del carve: `python -I <skill>/scripts/pausas.py index.html` (+4 dB en cada pausa de la voz ≥ 0,5 s;
    el carve suelta despacio y en pausas cortas la cama no sube sola). Medir con `volumedetect` en una
    pausa del render antes de dar por buena la mezcla.
+   **Pantalla final del largo** (últimos ~15-20 s, para los elementos finales de YouTube): el
+   contenido del cierre (marca, CTA, enlace, presentador) va en la mitad izquierda y la zona de
+   los videos sugeridos y el botón de suscribirse queda **vacía**: solo el fondo de la escena
+   (rayos, trama, manchas que respiran). Nada de recuadros punteados, esquinas, marcos ni textos
+   "video sugerido": esos elementos los pone YouTube encima y una plantilla dibujada se ve
+   duplicada o desalineada. Duración extra en `armar.mjs` (p. ej. `FINAL = 15` en la última escena).
 9. **Revisar**: `npx hyperframes check` + capturas cada ~12 s
    (`npx hyperframes snapshot --at … --no-end --describe false`) y **mirarlas**. Corregir texto
    cortado, solapes no intencionales y paneles vacíos más de ~2 s.
@@ -109,3 +115,4 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
 - [ ] Alternó al menos dos técnicas o hizo un corte duro de fondo.
 - [ ] Cifras del guion; fuente visible cuando aplica.
 - [ ] Capturas revisadas: sin texto cortado ni solapes accidentales.
+- [ ] Cierre del largo: zona de la pantalla final vacía (sin recuadros ni marcos de "video sugerido").
