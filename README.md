@@ -35,6 +35,67 @@ guion.md ──► voz.ts ──► NN.mp3 + NN.words.json (segundo exacto de ca
 
 Tú escribes o apruebas el guion, revisas las capturas y decides. El agente programa las escenas.
 
+## Comandos
+
+Todo se pide con un modo: **`/edwin-motion <modo> [slug|tema] [opciones]`**. El `slug` es el nombre
+de la carpeta del tema en `guiones/<slug>/`. Sin modo, el skill muestra el menú. Los modos con 💲
+gastan plata: antes de gastar te muestran el costo y esperan tu sí.
+
+### Planear
+
+| Comando | Qué hace | Deja |
+|---|---|---|
+| `/edwin-motion ideas [nicho]` | Busca qué está funcionando en tu nicho y noticias de IA de las últimas 2 semanas, y propone 5 temas, cada uno con gancho, formato, duración, 2-3 fuentes, medios reales disponibles y el momento fuerte para el Short. No los aprueba: eso lo decides tú. | 5 temas nuevos al final de `TEMAS.md` |
+| `/edwin-motion noticia <url> [--carrusel]` 💲 | De un anuncio de IA a un Short el mismo día. Lee la noticia, busca la fuente primaria y una segunda que la confirme (rumor = "según…"), escribe un guion de 40-55 s y te pide **una sola aprobación** (guion + 3 títulos + medios + costo de voz). Luego produce voz, música, Short, portadas y textos por red. | `guiones/noticia-<tema>-<aaaammdd>/`, `out/<slug>/short/`, `publicacion.md` |
+| `/edwin-motion guion <slug\|tema>` | Guion largo por bloques (uno por escena), cada cifra con su fuente, gancho de ≤ 8 s, tramo del Short marcado con `[SHORT]` y cierre con CTA. Además, el plan de sonidos y el plan de medios reales por bloque. | `guion.md`, `sonidos.md`, `medios.md` |
+
+### Producir
+
+| Comando | Qué hace | Deja |
+|---|---|---|
+| `/edwin-motion voz <slug>` 💲 | Narra cada bloque con ElevenLabs (`with-timestamps`) y guarda el segundo exacto de cada palabra, que es lo que sincroniza la animación. | `assets/audio/NN.mp3` + `NN.words.json` |
+| `/edwin-motion musica <slug>` | Cama musical nueva para el tema con MusicGen local (gratis), nivelada para que se oiga bajo la voz. | `assets/bgm/cama.wav` |
+| `/edwin-motion presentador <slug>` | Poses de tu personaje y sus bocas para moverlas con la voz. | `assets/img/pj-*.png` |
+| `/edwin-motion sonidos <slug>` | Efectos temáticos del guion (Pixabay primero, generarlos es lo último) y sonido automático en cada movimiento de las escenas. | `assets/sfx/`, `*.sfx-auto.json` |
+| `/edwin-motion largo <slug>` | Video principal 16:9: proyecto HyperFrames, estilo del video, una escena por bloque, sonido, montaje, revisión y render. | `out/<slug>/largo/<slug>.mp4` |
+| `/edwin-motion short <slug>` | Short 9:16 nativo (no un recorte), con el gancho del largo y zonas seguras para cada red. | `out/<slug>/short/<slug>-short.mp4` |
+
+### Material real e imágenes
+
+| Comando | Qué hace | Deja |
+|---|---|---|
+| `/edwin-motion medios <slug> <url\|búsqueda>` | Trae material real para combinar con la animación: **foto** (o la imagen de vista previa de una página), **clip de video** (solo el tramo que pidas), **pantallazo** de una web o un tuit, **páginas de un documento** PDF. Anota origen, fuente y licencia de cada archivo; sin fuente no se usa. | `assets/medios/` + `medios.json` |
+| `/edwin-motion imagen <slug> "<qué>"` 💲 | Imagen generada con IA (fal.ai), solo cuando no hay material real ni se puede dibujar. Primero muestra el precio; genera solo con tu autorización y anota el gasto. Con una imagen de referencia mantiene igual al personaje. | `assets/medios/ia-*.png`, renglón en `costos/costos.csv` |
+| `/edwin-motion biblioteca` | Índice de todo lo ya descargado o generado (sonidos, medios, imágenes IA, camas) para no bajarlo ni pagarlo otra vez. `biblioteca buscar <texto>` busca; `biblioteca usar <archivo> <slug>` lo copia a otro tema con su fuente y licencia. | `guiones/BIBLIOTECA.md` |
+
+Los mismos scripts se pueden correr a mano desde la raíz del proyecto:
+
+```bash
+node ~/.claude/skills/edwin-motion/scripts/medios.mjs <slug> foto <url> --fuente "OpenAI" --licencia "kit de prensa"
+node ~/.claude/skills/edwin-motion/scripts/medios.mjs <slug> video <url> --desde 12:03 --hasta 12:18 --fuente "OpenAI / YouTube"
+node ~/.claude/skills/edwin-motion/scripts/medios.mjs <slug> captura <url> --ancho 1280 --alto 1600 --escala 2
+node ~/.claude/skills/edwin-motion/scripts/medios.mjs <slug> documento <pdf|url> --paginas 1-2
+node ~/.claude/skills/edwin-motion/scripts/imagen.mjs <slug> "<prompt en inglés>" [--ref pose.png] [--aspecto 9:16]   # sin --autorizado solo muestra el precio
+node ~/.claude/skills/edwin-motion/scripts/biblioteca.mjs [buscar <texto> | usar <archivo> <slug>]
+```
+
+### Publicar
+
+| Comando | Qué hace | Deja |
+|---|---|---|
+| `/edwin-motion titulos <slug>` | 3 opciones de título (≤ 60 caracteres, con gancho pero sin mentir) y espera a que elijas. El elegido manda en el largo, el Short, los textos, la miniatura y las portadas. | título en `out/<slug>/publicacion.md` |
+| `/edwin-motion cover-large <slug>` | Miniatura del largo 1280×720, legible en pequeño. | `out/<slug>/largo/miniatura.png` |
+| `/edwin-motion cover-short <slug>` | Portadas del Short por red: YouTube Shorts, TikTok, Reels/Facebook y la cuadrícula de Instagram (3:4). | `out/<slug>/short/portada-*.png` |
+| `/edwin-motion carrusel <slug> [--personaje]` | Carrusel 4:5 para Instagram/LinkedIn/Facebook, con su propia portada y su propio texto (reglas en `references/carrusel.md`). | `out/<slug>/carrusel/slide-*.png` |
+| `/edwin-motion publicacion <slug>` | Paquete completo: subtítulos SRT, capítulos, textos por red, miniatura y portadas. | `out/<slug>/publicacion.md` + archivos |
+
+### Controlar
+
+| Comando | Qué hace | Deja |
+|---|---|---|
+| `/edwin-motion revisar <slug> [largo\|short]` | Chequeo de HyperFrames, capturas cada ~12 s, auditoría de que la voz diga lo que dice el guion, volumen de la música, cuadros negros y licencias de los medios. | lista de fallas con segundo y escena |
+| `/edwin-motion estado <slug>` | Qué piezas del tema están hechas y cuáles faltan. | tabla ✔/✘ y el siguiente comando a correr |
+
 ## Qué necesitas
 
 | Herramienta | Para qué | Costo |
@@ -48,6 +109,9 @@ Tú escribes o apruebas el guion, revisas las capturas y decides. El agente prog
 | [Google Chrome](https://www.google.com/chrome/) | Sonido automático y capturas de portadas | Gratis |
 | [Python](https://www.python.org) + [Pillow](https://python-pillow.org) | Solo si usas presentador con personaje | Gratis |
 | [MusicGen](https://huggingface.co/facebook/musicgen-small) (opcional) | Música de fondo local, vía el skill `media-use` de HyperFrames | Gratis |
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | Clips de video para `medios` | Gratis |
+| [PyMuPDF](https://pymupdf.readthedocs.io) | Páginas de documentos para `medios` | Gratis |
+| [fal.ai](https://fal.ai) (opcional) | Imágenes IA del modo `imagen` | Por imagen (≈ USD 0,04) |
 | Fuentes [Anton](https://fonts.google.com/specimen/Anton), [Poppins](https://fonts.google.com/specimen/Poppins), [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono), [Source Serif 4](https://fonts.google.com/specimen/Source+Serif+4) | Tipografía base | Gratis |
 
 ## Instalación
@@ -63,6 +127,7 @@ git clone https://github.com/sxsistemax/edwin-motion ~/.claude/skills/edwin-moti
 # 3. Variables de entorno para la voz
 export ELEVENLABS_API_KEY=...        # tu llave de ElevenLabs
 export ELEVENLABS_VOICE=...          # voice_id de tu voz (clon o de la biblioteca)
+# 4. (Opcional) imágenes IA: FALIA_API_KEY=... en el archivo .env de la raíz del proyecto
 ```
 
 En Windows (PowerShell): `$env:ELEVENLABS_API_KEY="..."`. Si Chrome no está en la ruta por defecto
@@ -70,40 +135,51 @@ de Windows, define `CHROME_PATH`.
 
 ## Primer video, rápido
 
-1. Abre Claude Code en una carpeta de proyecto y escribe:
-   `/edwin-motion video de 1 minuto sobre <tu tema>`.
-2. El agente te propone el guion en `guiones/<slug>/guion.md` (bloques `## Bloque N`, líneas de voz
-   con `>`, y por bloque "En pantalla" y "Sonido"). Ajústalo y apruébalo.
-3. Mira cuánto cuesta la voz y genérala:
+1. Abre Claude Code en una carpeta de proyecto y escribe `/edwin-motion guion <tu tema>`.
+   El agente te propone el guion en `guiones/<slug>/guion.md` (bloques `## Bloque N`, líneas de
+   voz con `>`). Ajústalo y apruébalo.
+2. `/edwin-motion voz <slug>`: te muestra cuántos créditos gasta y, con tu sí, narra. A mano:
    ```bash
    npx tsx ~/.claude/skills/edwin-motion/scripts/voz.ts guiones/<slug> --contar
    npx tsx ~/.claude/skills/edwin-motion/scripts/voz.ts guiones/<slug>
    ```
-4. Pídele al agente que arme las escenas, el sonido y el video; revisa las capturas que te
-   muestra y corrige lo que no te guste, como se lo dirías a un editor.
-5. Render: `npx hyperframes render -o out/<slug>/largo/<slug>.mp4`.
+3. `/edwin-motion largo <slug>` (o `short <slug>`): arma escenas, sonido y video. Revisa las
+   capturas que te muestra y corrige lo que no te guste, como se lo dirías a un editor.
+4. `/edwin-motion publicacion <slug>`: títulos, miniatura, portadas y textos por red.
+5. `/edwin-motion estado <slug>` en cualquier momento te dice qué falta.
 
-El flujo completo, con todos los pasos y comandos, está en [`SKILL.md`](SKILL.md) §3.
+¿Hay una noticia de IA que quieres sacar hoy? `/edwin-motion noticia <url>`.
+
+El detalle de cada modo está en [`SKILL.md`](SKILL.md) y en `references/`.
 
 ## Qué trae
 
 ```
 edwin-motion/
-├── SKILL.md                    reglas de movimiento, flujo completo y contrato de cada escena
-├── references/recetas.md       18 recetas GSAP (entradas, golpes, contadores, boca del presentador…)
+├── SKILL.md                    enrutador de modos y reglas de movimiento
+├── references/
+│   ├── flujo-video.md          producción paso a paso (voz, música, sonidos, escenas, montaje, render)
+│   ├── publicacion.md          títulos, miniatura, portadas por red, SRT y textos
+│   ├── medios.md               dónde buscar material real, reglas de crédito y cómo animarlo; imágenes IA
+│   ├── carrusel.md             reglas de copy, tipos de lámina y formato de carrusel.json
+│   └── recetas.md              18 recetas GSAP (entradas, golpes, contadores, boca del presentador…)
 ├── plantillas/
 │   ├── escena.html             plantilla de una escena (HyperFrames + GSAP)
 │   ├── armar.mjs               monta el video largo: escenas, voces, música, efectos, destellos
-│   └── publicacion/            subtítulos SRT + capítulos, miniatura y portadas por red
-│                               (los títulos siguen las reglas de SKILL.md §3, paso 12)
+│   ├── publicacion/            subtítulos SRT + capítulos, miniatura y portadas por red
+│   │                           (los títulos siguen las reglas de references/publicacion.md)
+│   └── carrusel/               renderizador de láminas 4:5, captura con Chrome y fuentes del canal
 ├── scripts/
 │   ├── voz.ts                  narración por bloques con ElevenLabs + tiempos por palabra
+│   ├── medios.mjs              scraping: foto, clip de video, pantallazo, páginas de PDF
+│   ├── imagen.mjs              imagen IA con fal.ai (solo con --autorizado)
+│   ├── biblioteca.mjs          índice, búsqueda y reutilización de lo ya descargado o generado
 │   ├── sonidos.mjs             pone sonido solo a cada movimiento de las escenas
 │   ├── sfx-base.mjs            arma golpe.mp3 y grieta.mp3 desde los efectos de HyperFrames
 │   ├── generar-sfx.ts          genera efectos nuevos con ElevenLabs describiéndolos en texto
 │   ├── presentador.py          poses de tu personaje con boca animable
 │   └── halftone.py             variante del presentador en puntos (halftone)
-└── assets/sfx/                 15 efectos propios (ElevenLabs Sound Effects)
+└── assets/sfx/                 20 efectos propios (ElevenLabs Sound Effects)
 ```
 
 ## Las tres técnicas
@@ -131,6 +207,9 @@ Un video largo de ~8 minutos: la voz del video "Así hago mis videos" (7.579 car
   distintos: prueba 2-3 frases antes de narrar el video completo
   (`ELEVENLABS_MODEL=eleven_v3`).
 - **Créditos.** La voz y los efectos nuevos consumen créditos de ElevenLabs: usa `--contar` antes.
+- **Material de terceros.** Lo que bajes con `medios` es de sus dueños: crédito visible siempre,
+  clips de 10 s como máximo con tu comentario encima, nada con marca de agua ni tras un login. No
+  subas `assets/medios/` a un repositorio público.
 - `golpe.mp3` y `grieta.mp3` no vienen en el repo porque salen de efectos de Pixabay que trae
   HyperFrames; `scripts/sfx-base.mjs` los arma desde tu propia instalación.
 
@@ -145,4 +224,6 @@ con sus notas de cambios. Descarga directa de la última:
 
 Hecho por Edwin Trujillo · [Edwin IA](https://www.youtube.com/@EdwinT_IA). Estilo inspirado en
 IAdeGuardia, Dresk y Andy Caseres. Código y efectos de `assets/sfx/` bajo licencia MIT (ver
-[`LICENSE`](LICENSE)). HyperFrames, GSAP, ElevenLabs y las fuentes tienen sus propias licencias.
+[`LICENSE`](LICENSE)). Las fuentes de `plantillas/carrusel/fuentes/` (Anton, Poppins, JetBrains
+Mono, Source Serif 4) van bajo SIL Open Font License 1.1 (`OFL-*.txt` junto a cada una).
+HyperFrames, GSAP y ElevenLabs tienen sus propias licencias.

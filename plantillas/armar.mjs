@@ -4,7 +4,7 @@
 // título de marca (compositions/frames/00-titulo.html). Escenas aún sin archivo
 // se saltan (el tiempo se conserva). Los golpes de sonido salen de cada
 // compositions/frames/NN-slug.sfx.json. Después de correrlo, aplicar el carve:
-//   node ~/.claude/skills/hyperframes-audio/scripts/carve.mjs --comp index.html --bed musica --voice voz-01 … --voice voz-12
+//   node C:/Users/edwin/.claude/skills/hyperframes-audio/scripts/carve.mjs --comp index.html --bed musica --voice voz-01 … --voice voz-12
 import fs from "fs";
 import { execFileSync } from "child_process";
 
@@ -73,7 +73,7 @@ fs.writeFileSync("index.html", `<!doctype html>
 ${hosts}
       <div id="corte"></div>
       <div id="grain-overlay" class="grain"><div class="grain-texture"></div></div>
-      <audio id="musica" src="assets/bgm/cama.wav" data-start="0" data-duration="${total}" data-track-index="11" data-volume="0.35"></audio>
+      <audio id="musica" src="assets/bgm/cama.wav" data-start="0" data-duration="${total}" data-track-index="11" data-volume="0.7"></audio>
 ${efectos}${voces}
     </div>
     <script>

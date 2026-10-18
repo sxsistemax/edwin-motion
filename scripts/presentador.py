@@ -1,18 +1,17 @@
-# Presentador con TU personaje a color (<carpeta>/0N Sin fondo.png, 5 poses), recortado en
+# Presentador del canal con el arte ORIGINAL a color (personaje/0N Sin fondo.png), recortado en
 # busto, más una versión con la boca abierta por pose para moverla con la voz (receta 15).
 # La boca abierta se pinta DENTRO de los dientes reales: la parte de abajo de los dientes pasa a
 # ser interior oscuro con lengua (en la pose 04, que ya ríe con la boca abierta, al revés: el
 # interior de abajo pasa a dientes y la boca "se cierra").
 #
 # Uso (desde la raíz del repo; requiere `pip install pillow`, gratis):
-#   python scripts/presentador.py <carpeta_salida> --personaje <carpeta con 01..05 Sin fondo.png>
-# IMPORTANTE: las cajas de boca y el corte del busto de POSES están medidas para el personaje
-# original (704×1472). Con tu arte, mide la caja de la boca de cada pose (x0, y0, x1, y1) y ajústala.
+#   python .claude/skills/edwin-motion/scripts/presentador.py <carpeta_salida>
 # Genera pj-brazos, pj-senala, pj-abre, pj-celebra, pj-apunta y pj-apunta-espejo (.png), cada uno
 # con su pj-<pose>-boca.png del mismo tamaño. Revisar las -boca.png si cambia el arte.
 import argparse, os
 from PIL import Image, ImageDraw, ImageOps
 
+RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
 # (archivo, nombre, corte del busto, caja de la boca en px del original 704×1472, ¿ya abierta?)
 POSES = [("01", "pj-brazos", .52, (262, 462, 422, 528), False),
          ("02", "pj-senala", .58, (236, 484, 418, 548), False),
@@ -59,11 +58,10 @@ def boca(im, caja, abierta):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("salida")
-    ap.add_argument("--personaje", default="personaje", help="carpeta con 01..05 Sin fondo.png (PNG transparente)")
     a = ap.parse_args()
     os.makedirs(a.salida, exist_ok=True)
     for n, nombre, corte, caja, abierta in POSES:
-        im = Image.open(os.path.join(a.personaje, f"{n} Sin fondo.png")).convert("RGBA")
+        im = Image.open(os.path.join(RAIZ, "personaje", f"{n} Sin fondo.png")).convert("RGBA")
         b = boca(im, caja, abierta)
         im, b = (x.crop((0, 0, x.width, int(x.height * corte))) for x in (im, b))
         salidas = [(nombre, im, b)]

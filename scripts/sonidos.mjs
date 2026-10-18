@@ -13,10 +13,10 @@
 //   check         casilla que se marca (strokeDashoffset corto) 
 //   pop-suave     etiqueta/chip que salta con rebote (ease back.*)
 //   typing        tecleo (stagger de duración ≈ 0) · click: interruptor (sw/knob/toggle/interruptor)
-// Efectos: biblioteca propia del skill (../assets/sfx, ElevenLabs, scripts/generar-sfx.ts) + la de media-use.
+// Efectos: biblioteca propia del canal (../assets/sfx, ElevenLabs, scripts/generar-sfx.ts) + la de media-use.
 //
 // Uso (desde la raíz del repo):
-//   node <skill>/scripts/sonidos.mjs <proyecto>   (desde la raíz del repo) [--index]
+//   node .claude/skills/edwin-motion/scripts/sonidos.mjs <proyecto> [--index]
 //   · largo (escenas en compositions/frames): escribe NN-slug.sfx-auto.json junto a cada escena;
 //     armar.mjs los mezcla con los .sfx.json.
 //   · --index (Short: escenas montadas en index.html): inserta <audio id="sfxa-N"> en index.html
@@ -30,11 +30,10 @@ import { createRequire } from "module";
 import { execFileSync } from "child_process";
 import { fileURLToPath } from "url";
 
-// RAIZ = carpeta desde la que se corre (se sirve por HTTP para leer las escenas): correr desde la raíz del repo.
-const RAIZ = process.cwd();
-const BIBS = [path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../assets/sfx"), path.join(os.homedir(), ".claude/skills/media-use/audio/assets/sfx")];
-const CHROME = process.env.CHROME_PATH || "C:/Program Files/Google/Chrome/Application/chrome.exe"; // en Mac/Linux: exportar CHROME_PATH
-// volúmenes probados de oído (con ~0,12 se oían muy bajitos)
+const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
+const BIBS = [path.resolve(RAIZ, ".claude/skills/edwin-motion/assets/sfx"), path.join(os.homedir(), ".claude/skills/media-use/audio/assets/sfx")];
+const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
+// volúmenes subidos 13-oct-2026 (Edwin los oía muy bajitos)
 const VOL = { "whoosh-short": 0.28, "desliza-1": 0.3, "desliza-2": 0.3, papel: 0.28, caida: 0.3, llenado: 0.22, tick: 0.2,
   marcador: 0.25, acumula: 0.26, disminuye: 0.26, monedas: 0.3, check: 0.3, "pop-suave": 0.28, typing: 0.18, click: 0.35 };
 const HUECO = 0.3; // separación mínima entre efectos

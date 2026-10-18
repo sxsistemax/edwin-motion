@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 node_modules/
 .env
+
+# Sonidos derivados de Pixabay: su licencia no permite redistribuirlos sueltos en un repo público.
+# golpe y grieta se regeneran con scripts/sfx-base.mjs. Todo sonido nuevo bajado de Pixabay se agrega aquí.
+assets/sfx/golpe.mp3
+assets/sfx/grieta.mp3

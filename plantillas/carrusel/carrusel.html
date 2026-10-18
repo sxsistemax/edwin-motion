@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Carrusel edwin-motion</title>
+<!-- Dibuja UNA lámina 1080x1350 (4:5) de un carrusel desde su carrusel.json.
+     ?d=/guiones/<slug>/publicacion/carrusel/  (carpeta del JSON, desde la raíz del repo)
+     &s=1..N                                   (número de lámina)
+     Servir la raíz del repo por HTTP (python -m http.server 8765); capturar con capturar.mjs. -->
+<style>
+  @font-face { font-family: "Anton"; src: url("fuentes/Anton-Regular.ttf"); }
+  @font-face { font-family: "Poppins"; src: url("fuentes/Poppins-Black.ttf"); font-weight: 900; }
+  @font-face { font-family: "Poppins"; src: url("fuentes/Poppins-ExtraBold.ttf"); font-weight: 800; }
+  @font-face { font-family: "JBM"; src: url("fuentes/JetBrainsMono-ExtraBold.ttf"); }
+  @font-face { font-family: "Serif"; src: url("fuentes/SourceSerif4-Italic.ttf"); font-style: italic; }
+  :root { --fondo: #08111f; --acento: #ff6b1a; --rojo: #e3141f; --amarillo: #facc15; --tinta: #111; --texto: #e8ecf3; --k: 1; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { overflow: hidden; background: var(--fondo); }
+  .lam { position: relative; width: 1080px; height: 1350px; overflow: hidden; background: var(--fondo); color: #fff; font-family: "Poppins", sans-serif; font-weight: 800; }
+  .puntos { position: absolute; inset: 0; opacity: .2; background-image: radial-gradient(var(--acento) 2px, transparent 2.6px); background-size: 26px 26px;
+    -webkit-mask: radial-gradient(ellipse at 62% 62%, #000 0, transparent 72%); mask: radial-gradient(ellipse at 62% 62%, #000 0, transparent 72%); }
+  .foco { position: absolute; left: 200px; top: 560px; width: 820px; height: 820px; border-radius: 50%; background: var(--acento); filter: blur(130px); opacity: .26; }
+  .marca { position: absolute; left: 80px; top: 54px; font-family: "JBM", monospace; font-size: 26px; color: var(--acento); letter-spacing: 4px; }
+
+  /* Zona de texto: todo se mide en calc(var(--k) * px) y --k baja hasta que el contenido cabe. */
+  .zona { position: absolute; left: 80px; top: 118px; width: 920px; display: flex; flex-direction: column; gap: calc(var(--k) * 30px); overflow: hidden; }
+  .badge { align-self: flex-start; font-family: "JBM", monospace; font-size: calc(var(--k) * 30px); color: var(--tinta); background: var(--acento);
+    padding: 4px 16px; border: 4px solid var(--tinta); box-shadow: 6px 6px 0 #000; transform: rotate(-3deg); }
+  .titulo { font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase; line-height: .95; font-size: calc(var(--k) * 104px); white-space: nowrap; }
+  .gancho { font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase; line-height: 1.06; font-size: calc(var(--k) * 150px); white-space: nowrap; }
+  .parrafo { font-size: calc(var(--k) * 40px); line-height: 1.32; color: var(--texto); font-weight: 900; white-space: nowrap; }
+  .hl { color: var(--acento); }
+  .gancho .hl { color: var(--tinta); background: linear-gradient(transparent 6%, var(--acento) 6%, var(--acento) 94%, transparent 94%); padding: 0 .1em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+  /* Tarjetas brutalistas (tablero / recibo) */
+  .tarjetas { display: flex; flex-direction: column; gap: calc(var(--k) * 22px); }
+  .tarj { display: flex; align-items: center; gap: calc(var(--k) * 24px); background: #fff; color: var(--tinta); border: 5px solid var(--tinta); border-radius: 18px;
+    box-shadow: 10px 10px 0 var(--acento); padding: calc(var(--k) * 18px) calc(var(--k) * 26px); font-size: calc(var(--k) * 38px); line-height: 1.2; font-weight: 900; }
+  .tarj:nth-child(even) { margin-left: 26px; }
+  .tarj .n { font-family: "Anton", sans-serif; font-weight: 400; font-size: calc(var(--k) * 64px); color: var(--acento); min-width: 1ch; line-height: 1; }
+  .tarj .ck { flex: none; width: calc(var(--k) * 52px); height: calc(var(--k) * 52px); border-radius: 10px; background: var(--acento); border: 4px solid var(--tinta);
+    display: grid; place-items: center; font-size: calc(var(--k) * 34px); color: var(--tinta); }
+  .tarj.menos { background: #c9ced6; box-shadow: 10px 10px 0 #4b5563; }
+  .tarj.menos .ck { background: #6b7280; color: #e5e7eb; }
+  .tarj small { display: block; font-size: .7em; font-weight: 800; color: #4b5563; margin-top: 4px; }
+  .paso .n { color: var(--tinta); background: var(--acento); border: 4px solid var(--tinta); border-radius: 50%; width: 1.25em; height: 1.25em; display: grid; place-items: center; font-size: calc(var(--k) * 52px); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .col h3 { font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase; font-size: calc(var(--k) * 60px); margin-bottom: calc(var(--k) * 18px); }
+  .col .tarj { margin-left: 0 !important; font-size: calc(var(--k) * 32px); padding: calc(var(--k) * 16px) calc(var(--k) * 18px); min-height: calc(var(--k) * 150px); }
+  .col.izq h3 { color: #9aa3b2; }
+  .col.der h3 { color: var(--acento); }
+
+  .gigante { font-family: "Anton", sans-serif; font-weight: 400; color: var(--acento); line-height: .86; font-size: calc(var(--k) * 240px); letter-spacing: -4px;
+    text-shadow: 12px 12px 0 #000; }
+  .stats { display: flex; gap: 40px; }
+  .stat .v { font-family: "Anton", sans-serif; font-weight: 400; color: var(--acento); font-size: calc(var(--k) * 190px); line-height: .9; }
+  .stat .l { font-family: "JBM", monospace; font-size: calc(var(--k) * 26px); color: var(--texto); }
+  .cita { font-family: "Serif", serif; font-style: italic; font-weight: 400; font-size: calc(var(--k) * 72px); line-height: 1.15; }
+  .autor { font-family: "JBM", monospace; font-size: calc(var(--k) * 28px); color: var(--acento); }
+
+  /* Visual de la lámina (abajo) */
+  .pj { position: absolute; bottom: -20px; width: 560px; }
+  .pj img { width: 100%; display: block; filter: drop-shadow(0 20px 40px rgba(0,0,0,.6)); }
+  .cuadro { position: absolute; top: 800px; width: 500px; height: 600px; overflow: hidden; border: 6px solid var(--tinta); border-radius: 28px;
+    box-shadow: 14px 14px 0 var(--acento), 0 30px 60px rgba(0,0,0,.5); transform: rotate(-3deg); }
+  .cuadro img { width: 100%; display: block; }
+  .libre { position: absolute; left: 0; top: 760px; width: 1080px; height: 590px; }
+  .sello { position: absolute; font-family: "Anton", sans-serif; color: var(--rojo); border: 10px solid var(--rojo); border-radius: 16px; background: rgba(8,17,31,.85);
+    transform: rotate(-7deg); white-space: nowrap; line-height: 1; padding: 6px 30px; font-size: 92px; }
+  .chip { position: absolute; background: #fff; color: var(--tinta); font-weight: 900; border-radius: 18px; border: 5px solid var(--tinta); box-shadow: 10px 10px 0 var(--acento);
+    padding: 14px 26px; font-size: 40px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="lam" id="lam">
+  <div class="puntos"></div>
+  <div class="foco"></div>
+  <div class="marca" id="marca">EDWIN·IA</div>
+  <div class="zona" id="zona"></div>
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+const base = new URL(q.get("d") || "./", location.href);
+const n = +(q.get("s") || 1);
+const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const br = (t) => esc(t).replace(/\n/g, "<br>");
+// Resalta la primera aparición literal de `hl` (ya escapada) dentro del HTML.
+const resalta = (html, hl) => hl ? html.replace(esc(hl), `<span class="hl">${esc(hl)}</span>`) : html;
+const src = (p) => new URL(p, base).href;
+
+fetch(new URL("carrusel.json", base)).then((r) => r.json()).then((c) => {
+  const t = c.tema || {};
+  for (const [k, v] of Object.entries(t)) if (k !== "marca") document.documentElement.style.setProperty("--" + k, v);
+  if (t.marca) document.getElementById("marca").textContent = t.marca;
+  const sl = c.slides[n - 1], zona = document.getElementById("zona"), lam = document.getElementById("lam");
+  if (sl.marca) document.getElementById("marca").textContent = sl.marca;  // ej. "EJEMPLO ILUSTRATIVO" solo en esa lámina
+  // Sin "personaje": true en el JSON (por defecto), los visuales de presentador no se dibujan.
+  const v = sl.visual && (sl.visual.tipo !== "presentador" || c.personaje) ? sl.visual : null;
+  const hl = (h) => resalta(h, sl.highlight);
+  const badge = sl.badge ? `<div class="badge">${esc(sl.badge)}</div>` : "";
+  const titulo = sl.title ? `<div class="titulo">${hl(br(sl.title))}</div>` : "";
+  const parrafo = sl.text ? `<div class="parrafo">${hl(br(sl.text))}</div>` : "";
+  const tarjetas = (items, f) => `<div class="tarjetas">${items.map(f).join("")}</div>`;
+
+  let h = "";
+  switch (sl.type) {
+    case "hook": h = `<div class="gancho">${hl(br(sl.text))}</div>`; break;
+    case "body":
+      h = badge + titulo + (sl.points
+        ? tarjetas(sl.points, (p) => `<div class="tarj ${p.type === "minus" ? "menos" : ""}"><span class="ck">${p.type === "minus" ? "✕" : "✓"}</span>${br(p.text)}</div>`)
+        : parrafo);
+      break;
+    case "list": h = badge + titulo + tarjetas(sl.items, (it, i) => `<div class="tarj"><span class="n">${i + 1}</span>${br(it)}</div>`); break;
+    case "checklist": h = badge + titulo + tarjetas(sl.items, (it) => `<div class="tarj"><span class="ck">✓</span>${br(it)}</div>`); break;
+    case "process": h = badge + titulo + tarjetas(sl.steps, (p, i) => `<div class="tarj paso"><span class="n">${i + 1}</span><div>${esc(p.title)}<small>${br(p.text)}</small></div></div>`); break;
+    case "comparison":
+      h = badge + titulo + `<div class="cols">${[["izq", sl.leftLabel, sl.leftItems, "menos"], ["der", sl.rightLabel, sl.rightItems, ""]].map(([lado, et, items, cl]) =>
+        `<div class="col ${lado}"><h3>${esc(et)}</h3>${tarjetas(items, (it) => `<div class="tarj ${cl}">${br(it)}</div>`)}</div>`).join("")}</div>`;
+      break;
+    case "number": h = badge + `<div class="gigante">${esc(sl.bigNumber)}</div>` + titulo + parrafo; break;
+    case "stats": h = badge + titulo + `<div class="stats">${sl.stats.map((s) => `<div class="stat"><div class="v">${esc(s.value)}</div><div class="l">${esc(s.label)}</div></div>`).join("")}</div>`; break;
+    case "quote": h = `<div class="cita">«${br(sl.text)}»</div>` + (sl.author ? `<div class="autor">${esc(sl.author)}${sl.role ? " · " + esc(sl.role) : ""}</div>` : ""); break;
+    case "cta": h = `<div class="gancho cta" style="font-size:calc(var(--k) * 118px)">${hl(br(sl.text))}</div>`; break;
+  }
+  zona.innerHTML = h;
+  // La zona de texto llega hasta donde empieza el visual (o hasta abajo si no hay).
+  zona.style.height = (v ? 740 - 118 : 1270 - 118) + "px";
+  if (!v) zona.style.justifyContent = "center";
+
+  if (v) {
+    const lado = v.lado || "der";
+    const el = document.createElement("div");
+    if (v.tipo === "presentador") {
+      el.className = "pj"; el.style[lado === "izq" ? "left" : "right"] = (v.x ?? 20) + "px";
+      if (v.ancho) el.style.width = v.ancho + "px";
+      el.innerHTML = `<img src="${src(v.img)}" alt="">`;
+    } else if (v.tipo === "cuadro") {
+      el.className = "cuadro";
+      el.style.left = (lado === "izq" ? 80 : lado === "centro" ? 290 : 540) + "px";
+      // Cuadro de un video 16:9 (el largo): tarjeta apaisada centrada.
+      if (v.horizontal) Object.assign(el.style, { left: "100px", width: "880px", height: "495px", top: "790px" });
+      el.innerHTML = `<img src="${src(v.img)}" alt="" style="margin-top:-${v.recorte || 0}px">`;
+    } else {
+      el.className = "libre"; el.innerHTML = v.html;  // objeto propio de la lámina (SVG/HTML)
+    }
+    lam.appendChild(el);
+  }
+  // Sello y chip opcionales, en la esquina libre de abajo (lado contrario al visual).
+  const libreIzq = !v || (v.lado || "der") !== "izq";
+  if (sl.sello) lam.insertAdjacentHTML("beforeend", `<div class="sello" style="${libreIzq ? "left:80px" : "right:80px"};top:${v ? 830 : 1060}px">${esc(sl.sello)}</div>`);
+  const chip = sl.chip || sl.handle;
+  if (chip) lam.insertAdjacentHTML("beforeend", `<div class="chip" style="${libreIzq ? "left:80px" : "right:80px"};top:${v ? (sl.sello ? 1040 : 880) : 1150}px">${hl(esc(chip))}</div>`);
+
+  // Encoge todo el texto (--k) hasta que la zona no desborde.
+  document.fonts.ready.then(() => {
+    let k = v ? 1.25 : 1.6;
+    zona.style.setProperty("--k", k);
+    while (k > 0.45 && (zona.scrollHeight > zona.clientHeight + 1 || zona.scrollWidth > zona.clientWidth + 1)) {
+      k -= 0.02; zona.style.setProperty("--k", k);
+    }
+    document.body.dataset.listo = "1";
+  });
+});
+</script>
+</body>
+</html>
