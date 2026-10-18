@@ -7,3 +7,4 @@ node_modules/
 # golpe y grieta se regeneran con scripts/sfx-base.mjs. Todo sonido nuevo bajado de Pixabay se agrega aquí.
 assets/sfx/golpe.mp3
 assets/sfx/grieta.mp3
+assets/sfx/vidrio.mp3

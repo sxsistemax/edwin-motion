@@ -46,6 +46,7 @@ gastan plata: antes de gastar te muestran el costo y esperan tu sí.
 | Comando | Qué hace | Deja |
 |---|---|---|
 | `/edwin-motion ideas [nicho]` | Busca qué está funcionando en tu nicho y noticias de IA de las últimas 2 semanas, y propone 5 temas, cada uno con gancho, formato, duración, 2-3 fuentes, medios reales disponibles y el momento fuerte para el Short. No los aprueba: eso lo decides tú. | 5 temas nuevos al final de `TEMAS.md` |
+| `/edwin-motion auto <idea> [--presupuesto 2] [--solo-short] [--sin-carrusel] [--imagenes]` 💲 | Producción completa **sin intervención**: investiga, escribe y verifica el guion, elige título, narra, anima, mezcla, revisa en ciclo (hasta 3 vueltas) y renderiza largo + Short con su paquete de publicación. Invocarlo es tu aprobación, con tope de gasto (USD 2 por defecto). No publica nada, no se pasa del presupuesto, no toca temas sensibles ni pone en tu voz pruebas que no hizo. | `out/<slug>/` completo + `AUTO.md` con decisiones, costos y qué revisar antes de publicar |
 | `/edwin-motion noticia <url> [--carrusel]` 💲 | De un anuncio de IA a un Short el mismo día. Lee la noticia, busca la fuente primaria y una segunda que la confirme (rumor = "según…"), escribe un guion de 40-55 s y te pide **una sola aprobación** (guion + 3 títulos + medios + costo de voz). Luego produce voz, música, Short, portadas y textos por red. | `guiones/noticia-<tema>-<aaaammdd>/`, `out/<slug>/short/`, `publicacion.md` |
 | `/edwin-motion guion <slug\|tema>` | Guion largo por bloques (uno por escena), cada cifra con su fuente, gancho de ≤ 8 s, tramo del Short marcado con `[SHORT]` y cierre con CTA. Además, el plan de sonidos y el plan de medios reales por bloque. | `guion.md`, `sonidos.md`, `medios.md` |
 
@@ -94,6 +95,7 @@ node ~/.claude/skills/edwin-motion/scripts/biblioteca.mjs [buscar <texto> | usar
 | Comando | Qué hace | Deja |
 |---|---|---|
 | `/edwin-motion revisar <slug> [largo\|short]` | Chequeo de HyperFrames, capturas cada ~12 s, auditoría de que la voz diga lo que dice el guion, volumen de la música, cuadros negros y licencias de los medios. | lista de fallas con segundo y escena |
+| `/edwin-motion auditar <slug> [largo\|short\|carrusel\|todo]` | Audita lo que se entrega (los mp4 y las láminas, no el proyecto): elementos que parpadean, textos que duran muy poco para leerlos, efectos que tapan la voz, cifras del anuncio contra mediciones independientes, láminas con texto encogido o palabras partidas. En `auto` corre siempre y corrige solo. | `out/<slug>/AUDITORIA.md` |
 | `/edwin-motion estado <slug>` | Qué piezas del tema están hechas y cuáles faltan. | tabla ✔/✘ y el siguiente comando a correr |
 
 ## Qué necesitas
@@ -161,6 +163,7 @@ edwin-motion/
 │   ├── flujo-video.md          producción paso a paso (voz, música, sonidos, escenas, montaje, render)
 │   ├── publicacion.md          títulos, miniatura, portadas por red, SRT y textos
 │   ├── medios.md               dónde buscar material real, reglas de crédito y cómo animarlo; imágenes IA
+│   ├── auditoria.md            qué se audita en los mp4 y las láminas ya entregados
 │   ├── carrusel.md             reglas de copy, tipos de lámina y formato de carrusel.json
 │   └── recetas.md              18 recetas GSAP (entradas, golpes, contadores, boca del presentador…)
 ├── plantillas/

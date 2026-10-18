@@ -1,6 +1,6 @@
 ---
 name: edwin-motion
-description: Lenguaje de animación y fábrica de videos de motion graphics con voz IA (HyperFrames), creado para el canal Edwin IA — se invoca con un modo, `/edwin-motion <modo> [slug|tema] [opciones]`, que cubre todo el ciclo de un tema — ideas, noticia del día desde una URL, guion, voz, largo 16:9, Short 9:16, carrusel, miniatura del largo, portadas del Short, publicación, medios reales (foto, video, pantallazo, documento por scraping) e imágenes IA con autorización. Movimiento fijo (tipografía editorial que golpea, tableros con contadores, presentador con boca sincronizada, todo clavado a la voz palabra por palabra); fondos y gráficos libres por tema. Usar en cada video, Short, portada o pieza nueva del canal.
+description: Lenguaje de animación y fábrica de videos de motion graphics con voz IA (HyperFrames), creado para el canal Edwin IA — se invoca con un modo, `/edwin-motion <modo> [slug|tema] [opciones]`, que cubre todo el ciclo de un tema — producción completa sin intervención desde una idea (`auto`), ideas, noticia del día desde una URL, guion, voz, largo 16:9, Short 9:16, carrusel, miniatura del largo, portadas del Short, publicación, auditoría de lo entregado (videos y carruseles), medios reales (foto, video, pantallazo, documento por scraping) e imágenes IA con autorización. Movimiento fijo (tipografía editorial que golpea, tableros con contadores, presentador con boca sincronizada, todo clavado a la voz palabra por palabra); fondos y gráficos libres por tema. Usar en cada video, Short, portada o pieza nueva del canal.
 argument-hint: "<modo> [slug|tema] [opciones] — sin modo muestra el menú"
 ---
 
@@ -29,6 +29,7 @@ Pedido: `$ARGUMENTS`
 | Modo | Objetivo | Entrada → salida | Lee |
 |---|---|---|---|
 | `ideas [nicho\|tema]` | Proponer temas con potencial viral y material real que los sostenga | → 5 temas nuevos al final de `TEMAS.md` (gancho, formato, duración, fuentes), sin marcar | §3.1 |
+| `auto <idea\|slug> [--presupuesto 2] [--solo-short] [--sin-carrusel] [--imagenes]` 💲 | Producción completa sin intervención: de una idea a largo + Short + carrusel + paquete de publicación + auditoría, decidiendo solo y con tope de gasto | idea → `out/<slug>/` completo + `out/<slug>/AUTO.md` (decisiones, costos, qué revisar antes de publicar) | §3.8 |
 | `noticia <url> [--carrusel]` 💲 | De un anuncio de IA a un Short publicado el mismo día (velocidad en noticias) | URL → guion corto, Short 9:16, portadas, textos por red en `out/<slug>/` | §3.7 |
 | `guion <slug\|tema>` | Guion largo por bloques con cifras verificadas + gancho del Short + plan de sonidos y de medios | → `guiones/<slug>/guion.md`, `sonidos.md`, `medios.md` | §3.2, `flujo-video.md` paso 1 |
 | `voz <slug>` 💲 | Locución con tu voz o tu clon en ElevenLabs (`with-timestamps`; con un clon, probar `eleven_v4` vs `eleven_v3`) | guion → `assets/audio/NN.mp3` + `NN.words.json` | `flujo-video.md` paso 2 |
@@ -46,11 +47,12 @@ Pedido: `$ARGUMENTS`
 | `musica <slug>` | Cama musical nueva para el tema (MusicGen local, gratis) | → `assets/bgm/cama.wav` | `flujo-video.md` paso 3 |
 | `presentador <slug>` | Poses del personaje + bocas para sincronizar | → `guiones/<slug>/assets/img/pj-*.png` | `flujo-video.md` paso 4 |
 | `revisar <slug> [largo\|short]` | Control de calidad antes de entregar | → lista de fallas con segundo y escena | §3.4 |
+| `auditar <slug> [largo\|short\|carrusel\|todo]` | Auditoría de lo entregado (mp4 y láminas, no el proyecto): parpadeos, textos que no se alcanzan a leer, sonidos que tapan la voz, cifras contra mediciones independientes, láminas con texto encogido o cortado | → `out/<slug>/AUDITORIA.md` con dónde, falla, gravedad y corrección | `auditoria.md` |
 | `estado <slug>` | Qué hay hecho y qué falta del tema | → tabla de piezas con ✔/✘ y el siguiente modo a correr | §3.5 |
 
 Referencias: `references/flujo-video.md` (producción), `references/publicacion.md` (paquete y
 títulos), `references/medios.md` (scraping e imágenes IA), `references/recetas.md` (código de cada
-movimiento). Rutas relativas a la carpeta del skill (`<skill>` = `~/.claude/skills/edwin-motion/` o
+movimiento), `references/auditoria.md` (auditoría de lo entregado). Rutas relativas a la carpeta del skill (`<skill>` = `~/.claude/skills/edwin-motion/` o
 `.claude/skills/edwin-motion/` del proyecto); los comandos se corren desde la raíz del proyecto.
 
 ## 2. Principios de movimiento (no negociables, todos los modos que animan)
@@ -137,7 +139,7 @@ refuerza el gancho. Capturar, **mirar** el PNG y copiarlo a `out/<slug>/`.
 ### 3.5 `estado`
 Revisar existencia de: `guion.md`, `assets/audio/*.words.json`, `ESTILO.md`, escenas, render del
 largo, render del Short, `publicacion.md` con título elegido, miniatura, portadas por red,
-carrusel, renglón en `costos.csv`. Responder con la tabla y el siguiente modo a correr.
+carrusel, `AUDITORIA.md`, renglón en `costos.csv`. Responder con la tabla y el siguiente modo a correr.
 
 ### 3.6 `biblioteca`
 Script: `scripts/biblioteca.mjs` (desde la raíz del repo).
@@ -178,3 +180,54 @@ con **un solo punto de aprobación** (paso 4) para no frenar.
    título elegido y los textos por red. Con `--carrusel`, además el modo `carrusel`.
 8. **Cierre**: `biblioteca` (reindexar) y una línea en `TEMAS.md` § Noticias publicadas con slug,
    fecha y si da para un largo (si la noticia crece, proponerla como tema).
+
+### 3.8 `auto <idea|slug>` — producción completa sin intervención
+
+Invocar este modo **es** la aprobación del creador para todas las decisiones que normalmente se le
+preguntan (guion, título, medios, sonidos, mezcla) y para gastar **hasta `--presupuesto` USD**
+(por defecto 2, de sobra para la voz de un largo de ~10 min; las imágenes IA quedan fuera salvo
+`--imagenes`). No se le pregunta nada en el camino: cada decisión se toma con la regla del modo
+correspondiente y se anota en `out/<slug>/AUTO.md`. Si una regla obliga a frenar, se frena y se
+explica en ese archivo; nunca se rellena para terminar.
+
+**Límites que el modo no cruza** (si hacen falta, para y lo deja escrito en `AUTO.md`):
+- Publicar o subir algo a cualquier red: la entrega queda lista en `out/<slug>/`, publica el creador.
+- Pasarse del presupuesto: antes de cada gasto se estima (`voz.ts --contar`, precio de fal.ai);
+  si no alcanza, se acorta el guion una vez; si aún no alcanza, para.
+- Temas sensibles: salud, finanzas personales, política, acusaciones a personas o empresas con
+  nombre propio. Eso necesita revisión humana del guion.
+- Afirmar en primera persona algo que no pasó: con la voz del creador, "lo probé" solo si el
+  agente hizo la prueba de verdad en esta corrida y guardó la evidencia (pantallazo, salida); si
+  no, se narra como "según X" o se quita.
+- Usar medios con licencia "por confirmar" o sin fuente: se descartan.
+
+**Cadena** (los modos de siempre, en orden; trabajos largos —escenas, renders— en segundo plano o
+repartidos entre agentes como dice `flujo-video.md`):
+1. **Tema.** Idea libre → slug kebab-case, agregar a `TEMAS.md` marcado `[x]` con "(auto)". Si no
+   aparecen al menos 2 fuentes primarias que sostengan el tema, parar: sin material no hay video.
+2. **`guion`** (§3.2) con duración según el material (8-14 min). Después, **verificación
+   independiente**: un agente aparte revisa cada cifra contra su fuente; la que no se confirma se
+   quita del guion. Bloque `[SHORT]` marcado.
+3. **`titulos`**: 3 opciones con las reglas de `publicacion.md`; se elige la que cumple todas y
+   tiene el contraste más claro, y se anotan las otras dos en `AUTO.md`.
+4. **`medios`** (biblioteca primero): solo material oficial o pantallazos de páginas públicas, con
+   crédito.
+5. **`voz`** 💲 (estimación → presupuesto → generar). Si el proyecto tiene auditor de narración,
+   correrlo y regenerar una vez los bloques que fallen.
+6. **`musica`**, **`presentador`**, `ESTILO.md`, escenas, **`sonidos`** (Pixabay: se toma el primer
+   candidato que cumple duración y etiquetas, sin pedir que alguien lo escuche; si no hay, el
+   efecto se omite — generar sfx solo si cabe en el presupuesto), armar y mezcla con el nivel de
+   `flujo-video.md` paso 8.
+7. **`revisar`** en ciclo: corregir y volver a revisar, máximo 3 vueltas; lo que siga fallando
+   queda listado en `AUTO.md` con segundo y escena.
+8. Render del **largo** y del **Short** (sin `--solo-short`; con él, solo el Short desde el guion
+   corto), **`publicacion`** completa y **`carrusel`** (siempre, salvo `--sin-carrusel`; sin
+   personaje, con su propio texto por red en `publicacion.md`).
+9. **`auditar todo`** (siempre, `references/auditoria.md`) sobre los mp4 y las láminas ya
+   renderizados: se corrige lo que falle, se re-renderiza lo tocado y se vuelve a auditar, máximo
+   2 vueltas. `out/<slug>/AUDITORIA.md` queda en la entrega y lo que siga en "mirar" pasa a la
+   lista de `AUTO.md`. No se da por terminada una corrida `auto` sin este paso.
+10. **Cierre:** costos reales en `costos/costos.csv`, `biblioteca` reindexada y `AUTO.md` con:
+   título elegido y alternativas, fuentes usadas, cifras descartadas, medios usados y descartados,
+   gasto por proveedor vs. presupuesto, fallas que quedaron y **lista corta de qué mirar antes de
+   publicar** (el gancho, las cifras, el CTA).

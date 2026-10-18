@@ -73,7 +73,7 @@ fs.writeFileSync("index.html", `<!doctype html>
 ${hosts}
       <div id="corte"></div>
       <div id="grain-overlay" class="grain"><div class="grain-texture"></div></div>
-      <audio id="musica" src="assets/bgm/cama.wav" data-start="0" data-duration="${total}" data-track-index="11" data-volume="0.7"></audio>
+      <audio id="musica" src="assets/bgm/cama.wav" data-start="0" data-duration="${total}" data-track-index="11" data-volume="1"></audio>
 ${efectos}${voces}
     </div>
     <script>

@@ -38,7 +38,7 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
    video). MusicGen local (`facebook/musicgen-small`, gratis) vía el motor de `media-use`: escribir
    `audio_request.json` con `{"provider":"auto","lang":"es","lines":[],"bgm":{"mode":"generate","prompt":"…"}}` y correr
    `node ~/.claude/skills/media-use/audio/scripts/audio.mjs --request ./audio_request.json --hyperframes . --out ./audio_meta.json --only bgm`
-   + `node ~/.claude/skills/media-use/audio/scripts/wait-bgm.mjs` → `assets/bgm/track.wav`. Sin líneas de voz en el request la cama sale de 30 s: para el largo llamar directo `generateBgmDetached({prompt, durationS: <total+15>, hyperframesDir, lyriaRecipe: null, hasVoice: true, anomalies: []})` de `media-use/audio/scripts/lib/bgm.mjs`. Medir con `ebur128` y llevarla a ~−25 LUFS (`volume=…dB`) para que valga el nivel del paso 8; guardar como `cama.wav`.
+   + `node ~/.claude/skills/media-use/audio/scripts/wait-bgm.mjs` → `assets/bgm/track.wav`. Sin líneas de voz en el request la cama sale de 30 s: para el largo llamar directo `generateBgmDetached({prompt, durationS: <total+15>, hyperframesDir, lyriaRecipe: null, hasVoice: true, anomalies: []})` de `media-use/audio/scripts/lib/bgm.mjs`. Medir con `ebur128` y llevarla a ~−19 LUFS, pico ≤ −3 dBFS (`volume=…dB`) para que valga el nivel del paso 8; guardar como `cama.wav`.
    El prompt (inglés) sale del tema y del tono del guion: género, instrumentos, bpm, tonalidad, y siempre
    "no vocals, no melody lead, steady and unobtrusive under narration". Ej. (video sobre una burbuja financiera): "tense minimal documentary
    underscore about a financial bubble, deep pulsing synth bass, soft ticking percussion, dark ambient pads, slow
@@ -62,10 +62,13 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
    Correrlo después de terminar las escenas (y de nuevo si cambian). Receta 17.
 8. **Armar**: copiar `plantillas/armar.mjs` (largo 16:9: escenas = voz + 0,8 s, título tras el
    gancho, destello en cada corte, sfx desde los sidecars) → `node armar.mjs` → carve de la
-   música bajo las voces (`hyperframes-audio/scripts/carve.mjs --bed musica --voice voz-01 … --strength 0.3`).
+   música bajo las voces (`hyperframes-audio/scripts/carve.mjs --bed musica --voice voz-01 … --strength 0.45`).
    **Nivel de la música** ("no se escucha ni cuando habla ni cuando se calla"): la cama
    MusicGen sale a ~−25 LUFS; con `data-volume` 0,35 + carve por defecto (0,8, baja hasta −19 dB) queda
-   inaudible. Usar `data-volume` ~0,7 y `--strength 0.3` (baja máx. ~7 dB). Medir con `volumedetect` en una
+   inaudible, y a −25 LUFS con `data-volume` 0,7 y fuerza 0,3 seguía muy bajita. Usar la cama a ~−19 LUFS,
+   `data-volume` 1 y `--strength 0.45` (baja ~10 dB bajo la voz): suave mientras habla y clara en las pausas.
+   Después del carve: `python -I <skill>/scripts/pausas.py index.html` (+4 dB en cada pausa de la voz ≥ 0,5 s;
+   el carve suelta despacio y en pausas cortas la cama no sube sola). Medir con `volumedetect` en una
    pausa del render antes de dar por buena la mezcla.
 9. **Revisar**: `npx hyperframes check` + capturas cada ~12 s
    (`npx hyperframes snapshot --at … --no-end --describe false`) y **mirarlas**. Corregir texto
