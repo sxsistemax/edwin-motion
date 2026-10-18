@@ -3,16 +3,17 @@
 // videos en vez de volver a buscarlo, bajarlo o pagarlo. Los duplicados (mismo contenido) se cuentan una
 // vez, con la lista de temas donde se usaron.
 //
-// Uso (desde la raíz del repo):
-//   node .claude/skills/edwin-motion/scripts/biblioteca.mjs                       reconstruye guiones/BIBLIOTECA.md
-//   node .claude/skills/edwin-motion/scripts/biblioteca.mjs buscar <texto> [--tipo sfx|foto|video|captura|documento|ia|musica]
-//   node .claude/skills/edwin-motion/scripts/biblioteca.mjs usar <archivo> <slug>  copia al tema con su fuente/licencia
+// Uso (desde la raíz del proyecto; <skill> = carpeta de este skill):
+//   node <skill>/scripts/biblioteca.mjs                       reconstruye guiones/BIBLIOTECA.md
+//   node <skill>/scripts/biblioteca.mjs buscar <texto> [--tipo sfx|foto|video|captura|documento|ia|musica]
+//   node <skill>/scripts/biblioteca.mjs usar <archivo> <slug>  copia al tema con su fuente/licencia
 import fs from "fs";
 import path from "path";
 import os from "os";
 import crypto from "crypto";
+import { fileURLToPath } from "url";
 
-const SKILL_SFX = ".claude/skills/edwin-motion/assets/sfx";
+const SKILL_SFX = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../assets/sfx");
 const MEDIAUSE_SFX = path.join(os.homedir(), ".claude/skills/media-use/audio/assets/sfx");
 const rel = (p) => path.relative(process.cwd(), p).replaceAll("\\", "/");
 const hash = (p) => crypto.createHash("sha1").update(fs.readFileSync(p)).digest("hex").slice(0, 12);
@@ -69,7 +70,7 @@ const items = indexar();
 if (!cmd) {
   const titulos = { sfx: "Sonidos", foto: "Fotos y logos", video: "Clips de video", captura: "Pantallazos", documento: "Documentos", ia: "Imágenes IA", musica: "Camas de música (solo referencia: cada video lleva cama nueva)" };
   let md = `# Biblioteca del canal\n\nGenerado por \`biblioteca.mjs\` (${new Date().toISOString().slice(0, 10)}). No editar a mano: volver a correrlo.\n` +
-    `Reutilizar: \`node .claude/skills/edwin-motion/scripts/biblioteca.mjs usar <archivo> <slug>\`.\n`;
+    `Reutilizar: \`node <skill>/scripts/biblioteca.mjs usar <archivo> <slug>\`.\n`;
   for (const [tipo, titulo] of Object.entries(titulos)) {
     const lista = items.filter((i) => i.tipo === tipo).sort((x, y) => x.nombre.localeCompare(y.nombre));
     if (!lista.length) continue;

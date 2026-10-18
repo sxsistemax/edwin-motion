@@ -1,6 +1,6 @@
 # Recetas de movimiento edwin-motion
 
-Bloques probados (Short v2 y largo v2 de `guiones/burbuja-ia/`). Todos son GSAP sobre la
+Bloques probados en los videos del canal. Todos son GSAP sobre la
 timeline pausada `tl`, deterministas y seguros para buscar a cualquier instante. Cambiar
 colores, fuentes y objetos libremente: lo que se conserva es el **movimiento**.
 
@@ -21,7 +21,7 @@ colores, fuentes y objetos libremente: lo que se conserva es el **movimiento**.
 **Sacudida/temblor de un elemento que ENTRA desde fuera:** usar `tl.to(el, { keyframes: [...] }, t)`, nunca
 `tl.fromTo(el, { x: 0 }, { keyframes: [...], immediateRender: false }, t)`: con keyframes el `immediateRender: false`
 no se respeta, el `x: 0` se pinta desde el inicio y el elemento aparece antes de su entrada (le pasó a la tarjeta 2
-de las "señales a vigilar" de burbuja-ia). Igual con destellos tras un warp de tiempos: `set` + `to` en vez de `fromTo`.
+de una lista de "señales a vigilar"). Igual con destellos tras un warp de tiempos: `set` + `to` en vez de `fromTo`.
 
 Regla de oro: **entra rápido, se asienta con rebote y luego se queda vivo** (respira, gira,
 flota). Nada aparece "por fundido lento" y nada se queda completamente quieto más de ~8 s.
@@ -186,7 +186,7 @@ da la energía de los videos de referencia.
 `scripts/presentador.py` genera, junto a cada pose, `pj-<pose>-boca.png` (misma imagen con la boca
 abierta, pintada dentro de los dientes reales: los dientes de abajo pasan a interior oscuro con lengua).
 En `pj-celebra`, que ya ríe con la boca abierta, la `-boca` es la boca casi cerrada: los dientes de arriba
-se copian invertidos sobre el hueco (dos filas con contorno y sombra; aprobado por Edwin 13-oct-2026, no
+se copian invertidos sobre el hueco (dos filas con contorno y sombra; aprobado, no
 rellenar con blanco plano). Si cambia el arte del personaje, revisar las cajas de boca en `POSES`. Cada pose va en un contenedor con las dos imágenes
 y la boca se prende y apaga por sílaba con los tiempos de `NN.words.json`:
 ```html
@@ -207,7 +207,7 @@ Ojo: un `tl.set` en t = 0 exacto no se repinta al buscar; la primera pose va en 
 ## 16. Girar piezas SVG (ruedas, engranajes, agujas)
 
 No girar un `<g>`/`<path>` de SVG con `rotation` de GSAP + `transform-origin`/`transform-box` en CSS:
-las ruedas del tren de `burbuja-ia` orbitaban por la pantalla. Girar con el atributo del SVG y su centro:
+las ruedas de un tren orbitaban por la pantalla. Girar con el atributo del SVG y su centro:
 ```js
 const giro = { a: 0 };
 tl.fromTo(giro, { a: 0 }, { a: -2200, duration: 5.6, ease: "none", onUpdate: () =>
@@ -233,10 +233,10 @@ construida y asigna un efecto por tipo de movimiento:
 | Tecleo · interruptor | `typing` · `click` | 0,18 · 0,35 |
 
 Biblioteca propia del canal: `assets/sfx/` del skill (desliza-1/2, caida, llenado, tick, acumula, disminuye, monedas, marcador, papel, check,
-pop-suave), generada con ElevenLabs Sound Effects (`npx tsx .claude/skills/edwin-motion/scripts/generar-sfx.ts`,
+pop-suave), generada con ElevenLabs Sound Effects (`npx tsx <skill>/scripts/generar-sfx.ts`,
 ~USD 0,01 los 9; silencio inicial recortado y pico a −3 dB). El resto (whoosh, typing, click, chime, error, riser,
 impact, glitch…) sale de `~/.claude/skills/media-use/audio/assets/sfx` (Pixabay, uso comercial). Volúmenes
-aprobados tras la prueba de Edwin (los primeros, ~0,12, se oían muy bajitos). Al final se iguala el volumen general
+aprobados tras escucharlos en un video real (los primeros, ~0,12, se oían muy bajitos). Al final se iguala el volumen general
 del video a ~−16,5 LUFS. Para quitar o ajustar un efecto puntual: editar el `.sfx-auto.json` (o los `sfxa-N` del
 index en Shorts) y volver a armar.
 
@@ -244,7 +244,7 @@ index en Shorts) y volver a armar.
 
 Si cambia la voz de un video ya hecho, no reescribir tiempos: mapear tiempo viejo → nuevo por tramos entre las
 palabras (mismo texto) y aplicarlo **al crear** cada animación (envolver `tl.to/from/fromTo/set/call/add`: posición
-`p → W(p)`, duración/stagger/keyframes escalados). Implementación: `guiones/burbuja-ia/migrar-tiempos.mjs` +
+`p → W(p)`, duración/stagger/keyframes escalados). Implementación: un script `migrar-tiempos.mjs` en el proyecto +
 `rewarp.py`. **No** mover los hijos ya creados con `startTime()`/`timeScale()`: hacia adelante se ve bien, pero el
 render salta en el tiempo y quedan letreros encimados que no desaparecen. Probar saltos desordenados
 (adelante y atrás) antes de renderizar.

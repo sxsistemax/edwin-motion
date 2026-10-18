@@ -6,7 +6,7 @@ como relleno de fondo.
 
 ## 1. Qué buscar y dónde
 
-**Antes de buscar afuera**: `node .claude/skills/edwin-motion/scripts/biblioteca.mjs buscar <texto>`
+**Antes de buscar afuera**: `node <skill>/scripts/biblioteca.mjs buscar <texto>`
 (logo, demo, paper… que ya trajo otro tema) y, si está, `… biblioteca.mjs usar <archivo> <slug>`.
 
 | Necesito | Dónde buscar primero | Tipo en `medios.mjs` |
@@ -26,15 +26,15 @@ igual que con los sonidos de Pixabay.
 ## 2. Comando
 
 ```bash
-node .claude/skills/edwin-motion/scripts/medios.mjs <slug> foto <url> --nombre logo-openai --fuente "OpenAI" --licencia "kit de prensa"
-node .claude/skills/edwin-motion/scripts/medios.mjs <slug> video <url> --desde 12:03 --hasta 12:18 --nombre demo-sora --fuente "OpenAI / YouTube"
-node .claude/skills/edwin-motion/scripts/medios.mjs <slug> captura <url> --ancho 1280 --alto 1600 --escala 2 --nombre tuit-altman --fuente "X / @sama"
-node .claude/skills/edwin-motion/scripts/medios.mjs <slug> documento https://arxiv.org/pdf/1706.03762 --paginas 1-2 --nombre paper-attention --fuente "Vaswani et al. 2017"
+node <skill>/scripts/medios.mjs <slug> foto <url> --nombre logo-openai --fuente "OpenAI" --licencia "kit de prensa"
+node <skill>/scripts/medios.mjs <slug> video <url> --desde 12:03 --hasta 12:18 --nombre demo-sora --fuente "OpenAI / YouTube"
+node <skill>/scripts/medios.mjs <slug> captura <url> --ancho 1280 --alto 1600 --escala 2 --nombre tuit-altman --fuente "X / @sama"
+node <skill>/scripts/medios.mjs <slug> documento https://arxiv.org/pdf/1706.03762 --paginas 1-2 --nombre paper-attention --fuente "Vaswani et al. 2017"
 ```
 
 Todo queda en `guiones/<slug>/assets/medios/` + `medios.json` (archivo, origen, fuente, licencia,
 fecha). **Sin `--fuente` el archivo no se usa en el video**: completarlo antes de animarlo.
-`assets/medios/` **no se versiona** (decisión de Edwin 18-oct-2026: el único git es el del skill): queda solo en
+`assets/medios/` **no se versiona** (material de terceros): queda solo en
 este equipo, junto con su `medios.json` (que guarda el origen para volver a bajarlo). En git solo va la biblioteca de
 sonidos del skill (`assets/sfx/`).
 
@@ -46,7 +46,7 @@ sonidos del skill (`assets/sfx/`).
   el clip como protagonista. Sin música de terceros: se silencia el audio del clip salvo que la frase
   dicha sea el dato (y entonces se subtitula).
 - **Nada con marca de agua de banco de imágenes** (Getty, Shutterstock, Alamy): se descarta.
-- Si la licencia no está clara → `"licencia": "por confirmar"` y se le pregunta a Edwin antes de render.
+- Si la licencia no está clara → `"licencia": "por confirmar"` y se le pregunta al creador antes de render.
 - No se descargan cosas tras login ni de cuentas privadas.
 
 ## 4. Cómo combinar el medio con el movimiento
@@ -72,8 +72,8 @@ metáfora visual compleja, viñeta de motion comic).
 
 1. Primero intentar: dibujo en HTML/SVG → medio real → **recién ahí** imagen IA.
 2. Correr sin `--autorizado` para ver el precio:
-   `node .claude/skills/edwin-motion/scripts/imagen.mjs <slug> "<prompt en inglés>" [--ref "personaje/02 Sin fondo.png"] [--aspecto 9:16] [--n 2]`
-3. Mostrarle a Edwin: qué imagen, para qué momento del guion, prompt, modelo y costo. **Esperar su sí.**
+   `node <skill>/scripts/imagen.mjs <slug> "<prompt en inglés>" [--ref "personaje/02 Sin fondo.png"] [--aspecto 9:16] [--n 2]`
+3. Mostrarle al creador: qué imagen, para qué momento del guion, prompt, modelo y costo. **Esperar su sí.**
 4. Con el sí: repetir con `--autorizado`. El script guarda la imagen en `assets/medios/ia-*.png`,
    la anota en `medios.json` y agrega el renglón en `costos/costos.csv`.
 5. Reglas: nunca una imagen IA que parezca foto de un hecho o de una persona real (si se usa

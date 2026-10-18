@@ -1,6 +1,6 @@
 ---
 name: edwin-motion
-description: Lenguaje de animación y fábrica del canal Edwin IA (HyperFrames) — se invoca con un modo, `/edwin-motion <modo> [slug|tema] [opciones]`, que cubre todo el ciclo de un tema — ideas, noticia del día desde una URL, guion, voz, largo 16:9, Short 9:16, carrusel, miniatura del largo, portadas del Short, publicación, medios reales (foto, video, pantallazo, documento por scraping) e imágenes IA con autorización. Movimiento fijo (tipografía editorial que golpea, tableros con contadores, presentador con boca sincronizada, todo clavado a la voz palabra por palabra); fondos y gráficos libres por tema. Usar en cada video, Short, portada o pieza nueva del canal.
+description: Lenguaje de animación y fábrica de videos de motion graphics con voz IA (HyperFrames), creado para el canal Edwin IA — se invoca con un modo, `/edwin-motion <modo> [slug|tema] [opciones]`, que cubre todo el ciclo de un tema — ideas, noticia del día desde una URL, guion, voz, largo 16:9, Short 9:16, carrusel, miniatura del largo, portadas del Short, publicación, medios reales (foto, video, pantallazo, documento por scraping) e imágenes IA con autorización. Movimiento fijo (tipografía editorial que golpea, tableros con contadores, presentador con boca sincronizada, todo clavado a la voz palabra por palabra); fondos y gráficos libres por tema. Usar en cada video, Short, portada o pieza nueva del canal.
 argument-hint: "<modo> [slug|tema] [opciones] — sin modo muestra el menú"
 ---
 
@@ -22,7 +22,7 @@ Pedido: `$ARGUMENTS`
 5. **Biblioteca primero.** `medios`, `imagen` y `sonidos` buscan antes en la biblioteca
    (`biblioteca.mjs buscar <texto>`); solo se descarga o genera lo que no esté.
 6. **Plata = aprobación.** Los modos con costo (💲) muestran qué se va a gastar y esperan el sí de
-   Edwin antes de llamar a ElevenLabs, fal.ai o créditos de sfx. Todo gasto real va a `costos/costos.csv`.
+   el creador antes de llamar a ElevenLabs, fal.ai o créditos de sfx. Todo gasto real va a `costos/costos.csv`.
 
 ## 1. Modos
 
@@ -31,7 +31,7 @@ Pedido: `$ARGUMENTS`
 | `ideas [nicho\|tema]` | Proponer temas con potencial viral y material real que los sostenga | → 5 temas nuevos al final de `TEMAS.md` (gancho, formato, duración, fuentes), sin marcar | §3.1 |
 | `noticia <url> [--carrusel]` 💲 | De un anuncio de IA a un Short publicado el mismo día (velocidad en noticias) | URL → guion corto, Short 9:16, portadas, textos por red en `out/<slug>/` | §3.7 |
 | `guion <slug\|tema>` | Guion largo por bloques con cifras verificadas + gancho del Short + plan de sonidos y de medios | → `guiones/<slug>/guion.md`, `sonidos.md`, `medios.md` | §3.2, `flujo-video.md` paso 1 |
-| `voz <slug>` 💲 | Locución con el clon de Edwin (`eleven_v4`, `with-timestamps`) | guion → `assets/audio/NN.mp3` + `NN.words.json` | `flujo-video.md` paso 2 |
+| `voz <slug>` 💲 | Locución con tu voz o tu clon en ElevenLabs (`with-timestamps`; con un clon, probar `eleven_v4` vs `eleven_v3`) | guion → `assets/audio/NN.mp3` + `NN.words.json` | `flujo-video.md` paso 2 |
 | `largo <slug>` | Video principal 16:9 (8-14 min) | guion + voz → `out/<slug>/largo/<slug>.mp4` | `flujo-video.md` pasos 3-10, `recetas.md` |
 | `short <slug>` | Short 9:16 nativo (< 60 s) con el gancho del largo | → `out/<slug>/short/<slug>-short.mp4` | `flujo-video.md` paso 11, `recetas.md` |
 | `carrusel <slug> [--personaje]` | Carrusel 4:5 para IG/LinkedIn/Facebook | → `out/<slug>/carrusel/slide-*.png` | `carrusel.md` |
@@ -41,7 +41,7 @@ Pedido: `$ARGUMENTS`
 | `publicacion <slug>` | Paquete completo: SRT, capítulos, textos por red, miniatura y portadas | → `out/<slug>/publicacion.md` + archivos | `publicacion.md` |
 | `biblioteca [buscar <texto>\|usar <archivo> <slug>]` | Índice de todo lo ya descargado o generado (medios, imágenes IA, sonidos, camas) para reutilizarlo en vez de bajarlo o pagarlo de nuevo | → `guiones/BIBLIOTECA.md`; `usar` copia al tema con su fuente/licencia | §3.6 |
 | `medios <slug> <url\|búsqueda>` | Traer material real (foto, logo, clip, pantallazo, documento) para combinar con la animación | → `guiones/<slug>/assets/medios/` + `medios.json` | `medios.md` |
-| `imagen <slug> "<qué>"` 💲 | Imagen IA cuando no hay material real ni se puede dibujar | → `assets/medios/ia-*.png` (solo con sí de Edwin) | `medios.md` §5 |
+| `imagen <slug> "<qué>"` 💲 | Imagen IA cuando no hay material real ni se puede dibujar | → `assets/medios/ia-*.png` (solo con sí del creador) | `medios.md` §5 |
 | `sonidos <slug>` | Efectos temáticos (Pixabay primero) + sonidos automáticos de movimiento | → `assets/sfx/`, `*.sfx-auto.json` | `flujo-video.md` pasos 1 y 7 |
 | `musica <slug>` | Cama musical nueva para el tema (MusicGen local, gratis) | → `assets/bgm/cama.wav` | `flujo-video.md` paso 3 |
 | `presentador <slug>` | Poses del personaje + bocas para sincronizar | → `guiones/<slug>/assets/img/pj-*.png` | `flujo-video.md` paso 4 |
@@ -50,7 +50,8 @@ Pedido: `$ARGUMENTS`
 
 Referencias: `references/flujo-video.md` (producción), `references/publicacion.md` (paquete y
 títulos), `references/medios.md` (scraping e imágenes IA), `references/recetas.md` (código de cada
-movimiento). Rutas relativas a `.claude/skills/edwin-motion/`.
+movimiento). Rutas relativas a la carpeta del skill (`<skill>` = `~/.claude/skills/edwin-motion/` o
+`.claude/skills/edwin-motion/` del proyecto); los comandos se corren desde la raíz del proyecto.
 
 ## 2. Principios de movimiento (no negociables, todos los modos que animan)
 
@@ -58,10 +59,14 @@ Lo que se fija es el **movimiento y el ritmo**, no la decoración. Cada video el
 fondos, objetos y gráficos; lo que no cambia es que todo entra rápido, golpea, rebota, sigue vivo
 y está clavado a las palabras de la voz.
 
-Referencias aprobadas por Edwin (abrirlas antes de diseñar el primer video con este skill):
-- Short: `guiones/burbuja-ia/short-v2/compositions/s1-valor.html … s6-caida.html, cierre.html`
-- Largo: `guiones/burbuja-ia/largo-v2/compositions/frames/00-titulo.html … 12-cierre.html`
-- Origen del estilo: los videos de IAdeGuardia, Dresk y Andy Caseres (tres técnicas de abajo).
+Creado por Edwin Trujillo para el canal Edwin IA (youtube.com/@EdwinT_IA). Estilo inspirado en los
+videos de IAdeGuardia, Dresk y Andy Caseres (tres técnicas de abajo).
+
+**Referencias del proyecto:** si el `CLAUDE.md` del proyecto nombra videos aprobados como
+referencia de estilo, abrirlos antes de diseñar el primer video; si no hay, el primer video que el
+creador apruebe pasa a ser la referencia. Este skill se apoya en los skills oficiales de HyperFrames
+(`npx skills add heygen-com/hyperframes`): leer `/hyperframes` y `/hyperframes-core` antes de
+escribir la primera escena. Requisitos completos en `README.md`.
 
 1. **Clavado a la voz.** Cada aparición importante cae en el `start` de una palabra real de
    `assets/audio/NN.words.json` (ElevenLabs `with-timestamps`). Nada "más o menos a tiempo".
@@ -88,7 +93,7 @@ Referencias aprobadas por Edwin (abrirlas antes de diseñar el primer video con 
 
 **Tipografía base del canal** (se puede sumar una display por tema): Anton (titulares), Poppins
 800/900 (texto), JetBrains Mono (etiquetas de UI), Source Serif itálica (citas). Copiar los .ttf
-a `assets/fonts/` del video desde `guiones/burbuja-ia/largo-v2/assets/fonts/`.
+a `assets/fonts/` del video desde `plantillas/carrusel/fuentes/` del skill.
 
 ## 3. Detalle de los modos que no tienen referencia propia
 
@@ -99,7 +104,7 @@ a `assets/fonts/` del video desde `guiones/burbuja-ia/largo-v2/assets/fonts/`.
 3. Proponer **5** temas, cada uno con: gancho en una frase, formato (motion comic / graphics /
    images), duración objetivo, 2-3 fuentes primarias que lo sostienen, qué medios reales hay
    (demo, paper, tuit) y el momento fuerte que sería el Short.
-4. Agregarlos al final de `TEMAS.md` **sin** `[x]`: aprobar es de Edwin.
+4. Agregarlos al final de `TEMAS.md` **sin** `[x]`: aprobar es del creador.
 
 ### 3.2 `guion`
 1. Tema aprobado en `TEMAS.md` (si no lo está, preguntar). Slug en kebab-case.
@@ -109,7 +114,7 @@ a `assets/fonts/` del video desde `guiones/burbuja-ia/largo-v2/assets/fonts/`.
    Marcar con `[SHORT]` el tramo que se recorta para el Short. Cierre con CTA = acción + para qué.
 4. `sonidos.md` (plan de sfx, `flujo-video.md` paso 1) y `medios.md` del tema: por bloque, qué
    material real hace falta (foto, clip, pantallazo, documento) con la URL si ya se sabe.
-5. Mostrar el guion a Edwin; la voz (💲) no se genera hasta que lo apruebe.
+5. Mostrar el guion al creador; la voz (💲) no se genera hasta que lo apruebe.
 
 ### 3.3 `cover-large` / `cover-short`
 Sin título elegido → correr primero `titulos`. Plantillas `plantillas/publicacion/portadas.html` +
@@ -122,7 +127,8 @@ refuerza el gancho. Capturar, **mirar** el PNG y copiarlo a `out/<slug>/`.
 1. `npx hyperframes check` en el proyecto.
 2. Capturas cada ~12 s (`npx hyperframes snapshot --at … --no-end --describe false`) y **mirarlas**:
    texto cortado, solapes no intencionales, paneles vacíos > 2 s, zonas seguras del Short.
-3. `npm run auditar -- <slug>` (VoiceStudio en `localhost:3900`): la voz dice lo que dice el guion.
+3. La voz dice lo que dice el guion: si el proyecto trae su propio auditor de narración (ver su
+   `CLAUDE.md`), usarlo; si no, `npx hyperframes transcribe` del audio y comparar palabra por palabra.
 4. Del render: duración, `volumedetect` en una pausa (música audible), cuadros negros
    (`ffmpeg -vf blackdetect`).
 5. Cruzar `assets/medios/medios.json`: ningún medio sin `fuente` ni con licencia "por confirmar".
@@ -160,7 +166,7 @@ con **un solo punto de aprobación** (paso 4) para no frenar.
    qué pasó → por qué importa → qué cambia para ti → CTA (acción + para qué; "mira el video
    completo" solo si existe uno relacionado). Cada cifra con su fuente. Fecha del anuncio visible
    en pantalla (mono pequeña), porque la noticia caduca.
-4. **Aprobación única** de Edwin: guion + títulos (3 opciones, ≤ 60 car.) + medios elegidos +
+4. **Aprobación única** del creador: guion + títulos (3 opciones, ≤ 60 car.) + medios elegidos +
    costo de la voz. Sin su sí no se gasta nada.
 5. **Medios** (biblioteca primero): `captura` de la página del anuncio (zoom a la frase clave),
    `foto` (og:image o logo del kit de prensa), `video` de la demo oficial ≤ 10 s si la hay.

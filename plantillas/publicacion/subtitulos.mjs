@@ -1,9 +1,10 @@
 // Genera los subtítulos .srt del video largo y los capítulos para YouTube, a
 // partir de los tiempos reales de cada palabra (assets/audio/NN.words.json) y
 // del inicio de cada escena en el video (tiempos.json, que escribe armar.mjs).
-// Uso (desde guiones/jev-tutorial): node publicacion/subtitulos.mjs
-// La voz dice "Yev"/"Nul"/"llama C P P": en el texto se escribe como en pantalla.
+// Uso (desde guiones/<slug>): node publicacion/subtitulos.mjs   (cambiar SLUG abajo)
+// Si la voz pronuncia algo distinto a como se escribe (ej. "Yev" por "Jev"), corregirlo en el .replace de abajo.
 import fs from "fs";
+const SLUG = "mi-video";
 
 const { escenas } = JSON.parse(fs.readFileSync("tiempos.json", "utf8"));
 const MAX_CAR = 42; // por línea, como recomienda YouTube
@@ -46,8 +47,8 @@ const dosLineas = (t) => {
 };
 
 const srt = cues.map((c, i) => `${i + 1}\n${ts(c.ini)} --> ${ts(Math.max(c.fin, c.ini + 0.8))}\n${dosLineas(c.texto)}\n`).join("\n").replace(/llama C P P/g, "llama.cpp");
-fs.writeFileSync("publicacion/jev-tutorial.es.srt", srt);
-console.log(`ok publicacion/jev-tutorial.es.srt (${cues.length} subtítulos)`);
+fs.writeFileSync(`publicacion/${SLUG}.es.srt`, srt);
+console.log(`ok publicacion/${SLUG}.es.srt (${cues.length} subtítulos)`);
 
 const NOMBRES = {
   "01-gancho": "La IA que no habla: te devuelve un número",

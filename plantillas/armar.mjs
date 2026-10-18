@@ -4,7 +4,7 @@
 // título de marca (compositions/frames/00-titulo.html). Escenas aún sin archivo
 // se saltan (el tiempo se conserva). Los golpes de sonido salen de cada
 // compositions/frames/NN-slug.sfx.json. Después de correrlo, aplicar el carve:
-//   node C:/Users/edwin/.claude/skills/hyperframes-audio/scripts/carve.mjs --comp index.html --bed musica --voice voz-01 … --voice voz-12
+//   node ~/.claude/skills/hyperframes-audio/scripts/carve.mjs --comp index.html --bed musica --voice voz-01 … --voice voz-12
 import fs from "fs";
 import { execFileSync } from "child_process";
 

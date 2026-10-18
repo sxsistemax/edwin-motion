@@ -2,18 +2,18 @@
 // Todo cae en guiones/<slug>/assets/medios/ y queda anotado en medios.json (origen, fuente, licencia)
 // para poder dar crédito y no usar algo cuyo origen no se sabe.
 //
-// Uso (desde la raíz del repo):
-//   node .claude/skills/edwin-motion/scripts/medios.mjs <slug> foto <url>                 imagen directa; si la URL es una página, toma su og:image
-//   node .claude/skills/edwin-motion/scripts/medios.mjs <slug> video <url> [--desde 1:02 --hasta 1:10]   yt-dlp (≤1080p, mp4), solo el tramo si se pide
-//   node .claude/skills/edwin-motion/scripts/medios.mjs <slug> captura <url> [--ancho 1920 --alto 1080 --escala 1]   pantallazo de una web (Chrome headless)
-//   node .claude/skills/edwin-motion/scripts/medios.mjs <slug> documento <pdf|url> [--paginas 1-3 --dpi 200]   páginas de un PDF a PNG (PyMuPDF)
+// Uso (desde la raíz del proyecto; <skill> = carpeta de este skill):
+//   node <skill>/scripts/medios.mjs <slug> foto <url>                 imagen directa; si la URL es una página, toma su og:image
+//   node <skill>/scripts/medios.mjs <slug> video <url> [--desde 1:02 --hasta 1:10]   yt-dlp (≤1080p, mp4), solo el tramo si se pide
+//   node <skill>/scripts/medios.mjs <slug> captura <url> [--ancho 1920 --alto 1080 --escala 1]   pantallazo de una web (Chrome headless)
+//   node <skill>/scripts/medios.mjs <slug> documento <pdf|url> [--paginas 1-3 --dpi 200]   páginas de un PDF a PNG (PyMuPDF)
 // Opciones comunes: --nombre <base> --fuente "Crédito visible" --licencia "…"
 import fs from "fs";
 import path from "path";
 import os from "os";
 import { execFileSync } from "child_process";
 
-const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
+const CHROME = process.env.CHROME_PATH || "C:/Program Files/Google/Chrome/Application/chrome.exe"; // en Mac/Linux: exportar CHROME_PATH
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36";
 
 const [slug, tipo, origen, ...resto] = process.argv.slice(2);

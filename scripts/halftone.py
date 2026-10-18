@@ -1,16 +1,15 @@
-# Presentador en halftone (puntos) con borde de sticker: el personaje del canal
-# (personaje/0N Sin fondo.png) recortado en busto, puntos negros sobre blanco y
+# Presentador en halftone (puntos) con borde de sticker: tu personaje
+# (<carpeta>/0N Sin fondo.png, --personaje) recortado en busto, puntos negros sobre blanco y
 # las gafas pintadas con el color de acento del video.
 #
 # Uso (desde la raíz del repo; requiere `pip install pillow`, gratis):
-#   python .claude/skills/edwin-motion/scripts/halftone.py <carpeta_salida> [--acento 38bdf8] [--celda 9]
+#   python scripts/halftone.py <carpeta_salida> --personaje <carpeta> [--acento 38bdf8] [--celda 9]
 # Genera pj-brazos, pj-senala, pj-abre, pj-celebra y pj-apunta (.png) en la carpeta, y para cada
 # pose su versión con la boca abierta (pj-<pose>-boca.png, mismo tamaño) para mover la boca con
 # la voz (receta 15 de references/recetas.md). Revisar pj-*-boca.png: la boca se detecta sola.
 import argparse, os
 from PIL import Image, ImageDraw, ImageFilter
 
-RAIZ = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../.."))
 # (archivo, nombre, corte del busto, rango x donde buscar la boca)
 POSES = [("01", "pj-brazos", .52, (.3, .7)), ("02", "pj-senala", .58, (.3, .7)), ("03", "pj-abre", .58, (.3, .7)),
          ("04", "pj-celebra", .52, (.36, .64)), ("05", "pj-apunta", .62, None)]  # de perfil: sin boca animada (-boca = misma imagen)
@@ -81,10 +80,11 @@ def puntear(im, salida, celda, acento, gb):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("salida")
+    ap.add_argument("--personaje", default="personaje", help="carpeta con 01..05 Sin fondo.png (PNG transparente)")
     ap.add_argument("--acento", default="38bdf8", help="color hex de las gafas (sin #)")
     ap.add_argument("--celda", type=int, default=9, help="px por punto")
     a = ap.parse_args()
     os.makedirs(a.salida, exist_ok=True)
     rgb = tuple(int(a.acento[i:i + 2], 16) for i in (0, 2, 4)) + (255,)
     for n, nombre, corte, rx in POSES:
-        halftone(os.path.join(RAIZ, "personaje", f"{n} Sin fondo.png"), os.path.join(a.salida, f"{nombre}.png"), corte, a.celda, rgb, rx)
+        halftone(os.path.join(a.personaje, f"{n} Sin fondo.png"), os.path.join(a.salida, f"{nombre}.png"), corte, a.celda, rgb, rx)

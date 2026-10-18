@@ -1,24 +1,22 @@
 # Carrusel (modo `carrusel <slug> [--personaje]`)
 
-Antes era el skill aparte `edwin-motion-carrusel`; ahora es un modo de edwin-motion.
 
 Un carrusel se lee deslizando con el pulgar: **cada lámina es una idea que golpea**, el conjunto
 avanza y termina en una acción. Las láminas son "el cuadro más fuerte" de una escena edwin-motion:
 Anton gigante, tarjetas brutalistas con sombra dura, sellos, chips, cifras enormes y un objeto
 protagonista. Sin fotos de banco, sin plantillas, sin imágenes generadas.
 
-**1080×1350 (4:5). Por defecto 7 láminas:** 1 `hook` · 5 de contenido · 1 `cta`. Si Edwin pide
+**1080×1350 (4:5). Por defecto 7 láminas:** 1 `hook` · 5 de contenido · 1 `cta`. Si el creador pide
 otro número o el contenido tiene una forma fija (ej. "los 7 pasos del guion" → portada + 7 + CTA = 9),
 manda eso. Una idea por lámina; nunca dos pasos en una.
-**Personaje:** solo si el pedido trae `--personaje` (o Edwin lo dice). Por defecto, sin él
+**Personaje:** solo si el pedido trae `--personaje` (o el creador lo dice). Por defecto, sin él
 (`"personaje": false`: el renderizador ignora los visuales `presentador`).
 
 ## Archivos
 
 - `plantillas/carrusel/carrusel.html` — renderizador: lee `carrusel.json` y dibuja la lámina `?s=N`. Encoge el texto
   solo (`--k`) hasta que cabe y lo agranda si sobra espacio; respeta los `\n` del JSON.
-- `plantillas/carrusel/capturar.mjs` — `node .claude/skills/edwin-motion/plantillas/carrusel/capturar.mjs <carpeta>` (con
-  `python -m http.server 8765` en la raíz del repo) → `<carpeta>/slide-01.png … slide-07.png`.
+- `plantillas/carrusel/capturar.mjs` — `node <skill>/plantillas/carrusel/capturar.mjs <carpeta>` (levanta su propio servidor) → `<carpeta>/slide-01.png … slide-07.png`.
 - `plantillas/carrusel/fuentes/` — Anton, Poppins 800/900, JetBrains Mono, Source Serif itálica.
 
 ## Flujo
@@ -41,13 +39,13 @@ manda eso. Una idea por lámina; nunca dos pasos en una.
    que tapa texto, glifos que Anton no tiene (`«»` → `“”`).
 5. **Entrega:** copiar `slide-*.png` a `out/<slug>/carrusel/` y agregar a `out/<slug>/publicacion.md`
    una sección "Carrusel" con el texto del post por red (Instagram, LinkedIn, Facebook).
-   **El carrusel lleva su propio texto** (decisión de Edwin 16-oct-2026):
+   **El carrusel lleva su propio texto**:
    - Se escribe para un carrusel: habla de las láminas ("estos son los 7 pasos…"), invita a
      deslizar o guardar, y lleva al video completo. Nunca copia ni adapta el texto del Short o del
      largo, y nunca dice "este video" (un carrusel no es un video).
    - Puede abrir con la misma promesa de la portada, pero el resto es nuevo.
    - **No se tocan los textos del Short ni del largo** al hacer el carrusel: si algo de ellos
-     parece desalineado, se le pregunta a Edwin.
+     parece desalineado, se le pregunta al creador.
    - CTA = acción + para qué, igual que en todo el canal.
 
 ## Reglas de copy
@@ -107,4 +105,3 @@ orden → `process`; antes/después o dos opciones → `comparison`; ventajas/de
 las imágenes van con ruta absoluta desde la raíz del repo (`/out/<slug>/largo/miniatura.png`).
 `comparison` acepta `title`. Cada lámina acepta `marca` propia: úsala para "… · EJEMPLO ILUSTRATIVO"
 en las láminas con datos inventados (regla del canal).
-Ejemplo completo (portada + 7 pasos + CTA): `guiones/asi-hago-mis-videos/publicacion/carrusel/carrusel.json`.

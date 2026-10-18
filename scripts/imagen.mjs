@@ -1,9 +1,9 @@
 // Genera una imagen con IA (modo `imagen`, ver references/medios.md). Cuesta plata: sin --autorizado
 // solo muestra el precio y no genera nada. Con --ref usa nano-banana/edit (consistencia con una imagen
-// ancla, p. ej. el personaje), igual que el generador de curso_psicologia.
+// ancla, p. ej. el personaje).
 //
-// Uso (desde la raíz del repo):
-//   node .claude/skills/edwin-motion/scripts/imagen.mjs <slug> "<prompt en inglés>" [--ref a.png,b.png] [--aspecto 16:9] [--n 1] [--nombre x] [--autorizado]
+// Uso (desde la raíz del proyecto; <skill> = carpeta de este skill):
+//   node <skill>/scripts/imagen.mjs <slug> "<prompt en inglés>" [--ref a.png,b.png] [--aspecto 16:9] [--n 1] [--nombre x] [--autorizado]
 // Sale en guiones/<slug>/assets/medios/ia-<nombre>[-N].png, anotada en medios.json y en costos/costos.csv.
 import fs from "fs";
 import path from "path";
@@ -31,7 +31,7 @@ const precio = await fetch(`https://api.fal.ai/v1/models/pricing?endpoint_id=${e
 const costo = precio == null ? null : +(precio * n).toFixed(4);
 console.log(`${modelo} × ${n} = ${costo == null ? "precio no disponible (revisar dashboard de fal.ai)" : "USD " + costo}`);
 if (!op.autorizado) {
-  console.log("No se generó nada. Pedir aprobación a Edwin y repetir con --autorizado.");
+  console.log("No se generó nada. Pedir aprobación al creador y repetir con --autorizado.");
   process.exit(2);
 }
 
@@ -60,5 +60,9 @@ for (const [i, img] of imagenes.entries()) {
 fs.writeFileSync(manifiesto, JSON.stringify(lista, null, 2));
 
 const nota = `imagen IA (modo imagen del skill), request ${res.headers.get("x-fal-request-id") ?? "?"}${costo == null ? "; precio no disponible en la API de fal" : ""}`;
+if (!fs.existsSync("costos/costos.csv")) {
+  fs.mkdirSync("costos", { recursive: true });
+  fs.writeFileSync("costos/costos.csv", "fecha,nombre_video,proveedor_imagen,modelo_imagen,imagenes_generadas,costo_imagen_usd,proveedor_voz,modelo_voz,costo_voz_usd,costo_video_ia_usd,costo_total_usd,nota\r\n");
+}
 fs.appendFileSync("costos/costos.csv",
   `${new Date().toISOString().slice(0, 10)},${slug},fal.ai,${modelo},${imagenes.length},${costo ?? ""},,,,0,${costo ?? ""},"${nota}"\r\n`);
