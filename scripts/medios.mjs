@@ -10,6 +10,7 @@
 // Opciones comunes: --nombre <base> --fuente "Crédito visible" --licencia "…"
 import fs from "fs";
 import path from "path";
+import { carpetaGuion } from "./carpeta.mjs";
 import os from "os";
 import { execFileSync } from "child_process";
 
@@ -24,7 +25,7 @@ if (!slug || !tipo || !origen) {
 const op = {};
 for (let i = 0; i < resto.length; i += 2) op[resto[i].replace(/^--/, "")] = resto[i + 1];
 
-const DIR = path.resolve("guiones", slug, "assets/medios");
+const DIR = path.join(carpetaGuion(slug), "assets/medios");
 fs.mkdirSync(DIR, { recursive: true });
 const base = op.nombre ?? `${tipo}-${new URL(origen.startsWith("http") ? origen : "file:///" + origen).hostname.replace(/^www\./, "") || "local"}-${Date.now().toString(36)}`;
 
@@ -32,7 +33,7 @@ function anotar(archivos) {
   const manifiesto = path.join(DIR, "medios.json");
   const lista = fs.existsSync(manifiesto) ? JSON.parse(fs.readFileSync(manifiesto, "utf8")) : [];
   for (const a of archivos)
-    lista.push({ archivo: path.relative(path.resolve("guiones", slug), a).replaceAll("\\", "/"), tipo, origen,
+    lista.push({ archivo: path.relative(carpetaGuion(slug), a).replaceAll("\\", "/"), tipo, origen,
       fuente: op.fuente ?? "", licencia: op.licencia ?? "por confirmar", fecha: new Date().toISOString().slice(0, 10) });
   fs.writeFileSync(manifiesto, JSON.stringify(lista, null, 2));
   for (const a of archivos) console.log("ok", path.relative(process.cwd(), a));

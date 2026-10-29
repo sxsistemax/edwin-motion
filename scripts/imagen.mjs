@@ -7,6 +7,7 @@
 // Sale en guiones/<slug>/assets/medios/ia-<nombre>[-N].png, anotada en medios.json y en costos/costos.csv.
 import fs from "fs";
 import path from "path";
+import { carpetaGuion } from "./carpeta.mjs";
 
 const [slug, prompt, ...resto] = process.argv.slice(2);
 if (!slug || !prompt) {
@@ -45,7 +46,7 @@ if (!res.ok) throw new Error(`fal ${res.status}: ${(await res.text()).slice(0, 3
 const imagenes = (await res.json())?.images ?? [];
 if (!imagenes.length) throw new Error("fal no devolvió imágenes");
 
-const DIR = path.resolve("guiones", slug, "assets/medios");
+const DIR = path.join(carpetaGuion(slug), "assets/medios");
 fs.mkdirSync(DIR, { recursive: true });
 const nombre = op.nombre ?? Date.now().toString(36);
 const manifiesto = path.join(DIR, "medios.json");
@@ -53,7 +54,7 @@ const lista = fs.existsSync(manifiesto) ? JSON.parse(fs.readFileSync(manifiesto,
 for (const [i, img] of imagenes.entries()) {
   const destino = path.join(DIR, `ia-${nombre}${imagenes.length > 1 ? "-" + (i + 1) : ""}.png`);
   fs.writeFileSync(destino, Buffer.from(await (await fetch(img.url)).arrayBuffer()));
-  lista.push({ archivo: path.relative(path.resolve("guiones", slug), destino).replaceAll("\\", "/"), tipo: "ia", origen: modelo,
+  lista.push({ archivo: path.relative(carpetaGuion(slug), destino).replaceAll("\\", "/"), tipo: "ia", origen: modelo,
     fuente: "Imagen generada con IA", licencia: "propia (fal.ai)", prompt, fecha: new Date().toISOString().slice(0, 10) });
   console.log("ok", path.relative(process.cwd(), destino));
 }

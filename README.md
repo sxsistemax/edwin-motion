@@ -8,6 +8,10 @@ Es el skill con el que hago los videos del canal **Edwin IA**
 ([youtube.com/@EdwinT_IA](https://www.youtube.com/@EdwinT_IA)). En el video "Así hago mis videos"
 explico todo el proceso paso a paso.
 
+**Videos del canal sobre el skill:**
+- [Cómo hacer videos animados con IA, sin cámara y sin saber animar (tutorial paso a paso)](https://youtu.be/q9Az9hoG1VA)
+- [Un comando y el video se hace SOLO: tutorial edwin-motion](https://youtu.be/om439wOFZIc)
+
 Lo que fija el skill es el **movimiento y el ritmo**, no la decoración: todo entra rápido, golpea,
 rebota, sigue vivo y cae justo en la palabra que dice la voz. Los colores, fondos y gráficos los
 eliges en cada video.
@@ -58,8 +62,8 @@ gastan plata: antes de gastar te muestran el costo y esperan tu sí.
 | `/edwin-motion musica <slug>` | Cama musical nueva para el tema con MusicGen local (gratis), nivelada para que se oiga bajo la voz. | `assets/bgm/cama.wav` |
 | `/edwin-motion presentador <slug>` | Poses de tu personaje y sus bocas para moverlas con la voz. | `assets/img/pj-*.png` |
 | `/edwin-motion sonidos <slug>` | Efectos temáticos del guion (Pixabay primero, generarlos es lo último) y sonido automático en cada movimiento de las escenas. | `assets/sfx/`, `*.sfx-auto.json` |
-| `/edwin-motion largo <slug>` | Video principal 16:9: proyecto HyperFrames, estilo del video, una escena por bloque, sonido, montaje, revisión y render. | `out/<slug>/largo/<slug>.mp4` |
-| `/edwin-motion short <slug>` | Short 9:16 nativo (no un recorte), con el gancho del largo y zonas seguras para cada red. | `out/<slug>/short/<slug>-short.mp4` |
+| `/edwin-motion largo <slug>` | Video principal 16:9: proyecto HyperFrames, estilo del video, una escena por bloque, sonido, montaje, revisión y render. | `out/NNN-<slug>/largo/<slug>.mp4` |
+| `/edwin-motion short <slug>` | Short 9:16 nativo (no un recorte), con el gancho del largo y zonas seguras para cada red. | `out/NNN-<slug>/short/<slug>-short.mp4` (`NNN` = consecutivo de la carpeta del tema) |
 
 ### Material real e imágenes
 
@@ -67,6 +71,7 @@ gastan plata: antes de gastar te muestran el costo y esperan tu sí.
 |---|---|---|
 | `/edwin-motion medios <slug> <url\|búsqueda>` | Trae material real para combinar con la animación: **foto** (o la imagen de vista previa de una página), **clip de video** (solo el tramo que pidas), **pantallazo** de una web o un tuit, **páginas de un documento** PDF. Anota origen, fuente y licencia de cada archivo; sin fuente no se usa. | `assets/medios/` + `medios.json` |
 | `/edwin-motion imagen <slug> "<qué>"` 💲 | Imagen generada con IA (fal.ai), solo cuando no hay material real ni se puede dibujar. Primero muestra el precio; genera solo con tu autorización y anota el gasto. Con una imagen de referencia mantiene igual al personaje. | `assets/medios/ia-*.png`, renglón en `costos/costos.csv` |
+| `/edwin-motion ui-kit [slug\|pieza]` | Estándar de colores del canal por roles (fondos, texto, resaltador, sello, marca y ranuras que llena cada tema), sacado de una pieza aprobada o, si no le pasas ninguna, de una entrevista corta. Verifica contraste (`scripts/contraste.mjs`) y te muestra una lámina para aprobar. | `identidad/ui-kit.css`, `ui-kit.md`, `ui-kit.html` |
 | `/edwin-motion biblioteca` | Índice de todo lo ya descargado o generado (sonidos, medios, imágenes IA, camas) para no bajarlo ni pagarlo otra vez. `biblioteca buscar <texto>` busca; `biblioteca usar <archivo> <slug>` lo copia a otro tema con su fuente y licencia. | `guiones/BIBLIOTECA.md` |
 
 Los mismos scripts se pueden correr a mano desde la raíz del proyecto:
@@ -97,6 +102,23 @@ node ~/.claude/skills/edwin-motion/scripts/biblioteca.mjs [buscar <texto> | usar
 | `/edwin-motion revisar <slug> [largo\|short]` | Chequeo de HyperFrames, capturas cada ~12 s, auditoría de que la voz diga lo que dice el guion, volumen de la música, cuadros negros y licencias de los medios. | lista de fallas con segundo y escena |
 | `/edwin-motion auditar <slug> [largo\|short\|carrusel\|todo]` | Audita lo que se entrega (los mp4 y las láminas, no el proyecto): elementos que parpadean, textos que duran muy poco para leerlos, efectos que tapan la voz, cifras del anuncio contra mediciones independientes, láminas con texto encogido o palabras partidas. En `auto` corre siempre y corrige solo. | `out/<slug>/AUDITORIA.md` |
 | `/edwin-motion estado <slug>` | Qué piezas del tema están hechas y cuáles faltan. | tabla ✔/✘ y el siguiente comando a correr |
+
+### Tutoriales de software (skill hermano `edwin-tutorial`)
+
+En la carpeta `edwin-tutorial/` de este repositorio hay un segundo skill para **tutoriales de una
+aplicación web**: Playwright entra al sitio (login con cuenta de prueba incluido), recorre el menú o
+el flujo y lo graba; el agente escribe la narración mirando la captura de cada paso; la voz sale gratis
+con Kokoro (local) o con tu voz de ElevenLabs; y HyperFrames monta encima portada, ficha "PASO NN",
+aro y etiqueta en cada clic, zoom a lo importante, tapas de datos privados y cierre. Cada paso se
+congela en su último cuadro hasta que la voz termina, así nunca se desfasa.
+
+| Comando | Qué hace | Deja |
+|---|---|---|
+| `/edwin-tutorial <url> [slug]` | Explora el sitio, arma `tutorial.json` con los pasos, graba, narra, monta, revisa y renderiza. Las credenciales van solo en variables de entorno (`TUT_USER`, `TUT_PASS`), nunca en archivos. | `render/<slug>.mp4` + `tutorial.json` para regenerarlo |
+
+Instalación: viene con el repositorio; enlaza o copia `edwin-tutorial/` como skill propio
+(`~/.claude/skills/edwin-tutorial`), corre `npm i` dentro de esa carpeta y, para la voz local,
+`pip install kokoro-onnx soundfile`. Detalle y formato de `tutorial.json` en `edwin-tutorial/SKILL.md`.
 
 ## Qué necesitas
 
@@ -219,7 +241,11 @@ edwin-motion/
 │   ├── generar-sfx.ts          genera efectos nuevos con ElevenLabs describiéndolos en texto
 │   ├── presentador.py          poses de tu personaje con boca animable
 │   └── halftone.py             variante del presentador en puntos (halftone)
-└── assets/sfx/                 20 efectos propios (ElevenLabs Sound Effects)
+├── assets/sfx/                 20 efectos propios (ElevenLabs Sound Effects)
+└── edwin-tutorial/             skill hermano: tutoriales de software grabados con Playwright
+    ├── SKILL.md                flujo, reglas de credenciales y privacidad, formato de tutorial.json
+    ├── scripts/                grabar.mjs (Playwright), voz.mjs (Kokoro/ElevenLabs), armar.mjs (HyperFrames)
+    └── ejemplo/tutorial.json   punto de partida
 ```
 
 ## Las tres técnicas

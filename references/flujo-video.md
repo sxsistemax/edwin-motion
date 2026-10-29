@@ -47,11 +47,13 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
    personaje **tal como es** (arte original a color, sin halftone ni filtros), 5 poses +
    `pj-apunta-espejo` (señala a la derecha: usarla cuando la lista/tarjeta está a la derecha) y su `pj-*-boca.png`
    para mover la boca (receta 15). `scripts/halftone.py` queda solo como estilo alternativo si el creador lo pide.
-5. **Diseño del video** en `guiones/<slug>/ESTILO.md`: paleta, fondos, objeto protagonista,
+5. **Diseño del video** en `guiones/<slug>/ESTILO.md`: paleta (desde el `ui-kit.css` del canal si
+   existe — modo `ui-kit`; el video solo llena `--acento-tema`/`--tension`), fondos, objeto protagonista,
    qué técnica domina en cada bloque (usar el `ESTILO.md` de un video ya aprobado como modelo, si lo hay,
    cambiando colores/objetos, NO las reglas de movimiento).
 6. **Escenas**: una por bloque, desde `plantillas/escena.html` (contrato abajo). Más de ~6
-   escenas → repartir entre agentes, 3 escenas por agente, todos en una sola tanda, cada uno
+   escenas → repartir entre agentes (lanzarlos con `model: "sonnet"`: escribir una escena con
+   receta y tabla de tiempos no pide el modelo grande), 3 escenas por agente, todos en una sola tanda, cada uno
    con `ESTILO.md` + este skill + el bloque del guion + su `words.json` + la tabla de tiempos.
 7. **Sonido**: cada escena deja `NN-slug.sfx.json` = `[[segundo, "golpe"|"grieta", volumen]]`
    (golpe 0,22-0,3 a +0,18 s del inicio del sello; grieta 0,2).
@@ -79,7 +81,7 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
 9. **Revisar**: `npx hyperframes check` + capturas cada ~12 s
    (`npx hyperframes snapshot --at … --no-end --describe false`) y **mirarlas**. Corregir texto
    cortado, solapes no intencionales y paneles vacíos más de ~2 s.
-10. **Render** (`npx hyperframes render -o out/<slug>/largo/<slug>.mp4`), verificar duración/volumen/cuadros.
+10. **Render** (`npx hyperframes render -o out/NNN-<slug>/largo/<slug>.mp4`; carpeta numerada según SKILL.md §0.7), verificar duración/volumen/cuadros.
     **Carpeta de entrega**: `out/<slug>/publicacion.md` en la raíz y una carpeta por
     pieza con su video y su miniatura/portada: `largo/` (mp4, miniatura, SRT, capítulos), `short/` (mp4 + portadas
     por red); varios Shorts → `short-1-<tema>/`, `short-2-…`. Las
@@ -90,6 +92,17 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
     **CTA en pantalla = acción + para qué**: nunca un chip solo con
     "Comenta SKILL" o "Sígueme"; siempre lo que recibe la persona ("Comenta SKILL y te envío gratis el
     skill para hacer tus videos"). Aplica a Shorts, cierres y pantalla final del largo.
+    **Variante TikTok** (`short-tiktok/`, copia del Short → `out/<slug>/short/<slug>-short-tiktok.mp4`):
+    TikTok elimina por "Normas de la comunidad" Shorts que mandan a otra plataforma. En la variante
+    no hay YouTube, "video completo en el enlace", "enlace en el perfil/bio" ni nada que saque de
+    TikTok, ni en la voz, ni en pantalla, ni en el texto. Sin pagar voz nueva: se corta ese tramo del
+    audio (`data-media-start` en el `<audio>` de la voz) y el cierre queda con un CTA de adentro
+    (sígueme / comenta X, con su para qué). Tampoco se dejan legibles teléfonos, correos ni
+    direcciones en las capturas, aunque sean de ejemplo: se tapan con un rectángulo del color del fondo
+    encima de la imagen, nunca editando el archivo de la captura.
+    **Volumen del Short: −14 LUFS integrados, pico ≤ −1,5 dBFS** (lo que normalizan TikTok, Reels y
+    Shorts; a −17 suena más bajo que el resto del feed). Se mide y se ajusta después del render con
+    `loudnorm` de dos pasadas (`I=-14:TP=-1.5:LRA=11`, video en `-c:v copy`). El largo no cambia.
 
 ## Contrato técnico de cada escena
 
@@ -111,6 +124,7 @@ Pasos 1-11 del flujo. Lo invocan los modos de `SKILL.md`. `<skill>` = carpeta de
 - [ ] Ningún tramo de más de ~8 s sin cambio visible.
 - [ ] Al menos un objeto vivo (respira/gira/flota) en cada panel.
 - [ ] Si sale el presentador mientras habla la voz, mueve la boca (receta 15).
+- [ ] Si el video usa personaje, la primera escena y la última lo muestran (abre con el gancho, cierra con el CTA).
 - [ ] Impactos con golpe + temblor + sidecar de sonido.
 - [ ] Alternó al menos dos técnicas o hizo un corte duro de fondo.
 - [ ] Cifras del guion; fuente visible cuando aplica.

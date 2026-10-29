@@ -42,6 +42,20 @@ Herramientas: hojas de cuadros (`ffmpeg -ss <s> -t <d> -i <mp4> -vf "fps=4,scale
    ≤ −1 dBTP, música audible en una pausa, cuadros negros (`blackdetect`; un panel de fondo negro
    intencional no es falla: confirmarlo mirando el cuadro).
 6. **Medios.** Ningún medio sin crédito visible ni con licencia "por confirmar".
+7. **Elementos que asoman antes de entrar.** Por cada entrada de lado o de abajo (`fromTo` con
+   `x`/`y` grande), calcular dónde queda el elemento mientras espera (posición CSS + desplazamiento +
+   ancho + sombra): si alguna parte cae dentro de 1920×1080 con el panel visible, falla (se ve la
+   tarjeta quieta en el borde antes del golpe). Corrección: desplazamiento a ±2000 (`recetas.md`,
+   entradas de lado).
+8. **Tachones y marcas sobre otro elemento.** Una raya, tachón o círculo se posiciona en px sobre
+   lo que marca (fila, palabra), no en % del contenedor; mirar el cuadro para confirmar que cruza
+   el elemento y no el espacio vacío.
+9. **Adornos sin función.** Objeto que se mueve (péndulo, alfiler, hilo, flecha) sin conectar ni
+   señalar nada: se quita, con su sonido.
+10. **Short por red.** Short a −14 LUFS ±1 (pico ≤ −1,5 dBTP). La variante TikTok no manda fuera de
+    TikTok (YouTube, "enlace en el perfil", "video completo") ni en la voz, ni en pantalla, ni en su
+    texto de `publicacion.md`, y no deja legibles teléfonos, correos ni direcciones en las capturas
+    (`flujo-video.md` paso 11). Si falta la variante, es falla grave: TikTok elimina esos videos.
 
 ## 2. Carrusel
 

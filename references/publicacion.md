@@ -18,6 +18,12 @@ Paso 12 del flujo.
       `short-instagram/` (el 1:1 sale de subir mal el video, no de una necesidad de la red).
     Textos por red (YouTube, LinkedIn, Shorts, TikTok, Reels, Facebook) sin afirmar que algo se probó si
     fue ilustrativo y sin prometer cosas a nombre del creador.
+    **TikTok:** el texto no nombra YouTube ni manda a enlaces fuera de TikTok ("enlace en el perfil",
+    "video completo"): TikTok lo trata como spam y puede eliminar el video. CTA de adentro (seguir,
+    comentar una palabra con su para qué, guardar). Se sube la variante `<slug>-short-tiktok.mp4`
+    (ver `flujo-video.md` paso 11) y en `publicacion.md` se anota: activar la etiqueta "Contenido
+    generado por IA" al publicar (voz clonada, personaje). Si TikTok elimina un video: apelar primero y
+    no volver a subir el mismo archivo con el mismo texto.
     **Títulos** (ejemplo: "Olvida ChatGPT: esta IA
     no escribe, DECIDE (tutorial JEV)"):
     - Sensacionalistas, de curiosidad: contraste con algo conocido ("Olvida ChatGPT"), negación + giro

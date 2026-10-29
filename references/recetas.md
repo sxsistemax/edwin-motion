@@ -66,6 +66,12 @@ tl.to("#x-obj", { x: -500, duration: 1.0, ease: "power2.in" }, t + 3.0);        
 Animar las dos copias del texto con el mismo selector (`#x-back span:nth-child(i), #x-front span:nth-child(i)`).
 Objetos usados: burbuja, locomotora, cohete, billete, chip. Cualquier objeto del tema sirve.
 
+**Entradas de lado: nacer fuera del todo.** El desplazamiento inicial deja el elemento completo
+fuera del cuadro mientras espera: hacia la derecha `x ≥ 1920 − left + 40`; hacia la izquierda
+`x ≤ −(left + ancho + padding + borde + sombra + 40)`. Con rotación, sumar margen. Un `x` corto
+(p. ej. 1300 para una tarjeta de 1190 px en `left: 90`) deja medio elemento asomado desde el
+inicio del panel y mata la sorpresa. Usar 2000 / −2000 salvo que haya razón.
+
 ## 4. Objeto colgando de un hilo (aguja, anzuelo, etiqueta de precio)
 
 Contenedor alto con el hilo (div de 2 px) y el objeto en la punta; nace fuera del cuadro
@@ -74,6 +80,9 @@ Contenedor alto con el hilo (div de 2 px) y el objeto en la punta; nace fuera de
 tl.fromTo("#x-pin", { y: 0 }, { y: 800, duration: 3.0, ease: "sine.inOut" }, t);
 tl.to("#x-pin", { y: 900, duration: 0.25, ease: "power3.in" }, tImpacto - 0.25);
 ```
+
+El hilo siempre **conecta** algo (une dos tarjetas, sostiene la etiqueta que se lee, clava una
+historia a un paso). Un alfiler con hilo que solo se balancea al lado del texto no dice nada: no se pone.
 
 ## 5. Ruptura / estallido
 

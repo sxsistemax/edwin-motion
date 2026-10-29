@@ -14,15 +14,26 @@ Pedido: `$ARGUMENTS`
    `guiones/<slug>/`) o el tema en texto libre; el resto, opciones (`--personaje`, `--n 3`…).
 2. Sin modo, o modo desconocido → mostrar la tabla de §1 y preguntar qué modo correr. Si el modo
    se parece a uno de la tabla (`miniatura` → `cover-large`, `portadas` → `cover-short`,
-   `video`/`long` → `largo`), usar ese y decirlo en una línea.
+   `video`/`long` → `largo`, `colores`/`paleta` → `ui-kit`), usar ese y decirlo en una línea.
 3. Falta el slug y el modo lo necesita → buscar el último tema activo (`TEMAS.md` marcado `[x]`
-   sin `out/<slug>/publicacion.md`) y proponerlo; no inventar slugs.
+   sin `out/<slug>/publicacion.md`) y proponerlo; no inventar slugs. Si el proyecto les antepone
+   fecha a las carpetas (`guiones/aaaammdd-<slug>/`, lo dice su `CLAUDE.md`), `guiones/<slug>/` en este
+   skill es esa carpeta: los scripts la encuentran solos (`scripts/carpeta.mjs`) y un tema nuevo se crea
+   con la fecha del día.
 4. Leer **solo** la referencia que pide el modo (columna "Lee"). Los principios de §2 aplican a
    todo lo que se mueve.
 5. **Biblioteca primero.** `medios`, `imagen` y `sonidos` buscan antes en la biblioteca
    (`biblioteca.mjs buscar <texto>`); solo se descarga o genera lo que no esté.
 6. **Plata = aprobación.** Los modos con costo (💲) muestran qué se va a gastar y esperan el sí de
    el creador antes de llamar a ElevenLabs, fal.ai o créditos de sfx. Todo gasto real va a `costos/costos.csv`.
+7. **Carpeta de entrega con consecutivo: `out/NNN-<slug>/`.** El slug no lleva número; el número
+   (3 dígitos) se le antepone al **crear** la carpeta del tema en `out/`, tomando el siguiente libre
+   del registro de videos del proyecto (el que nombre su `CLAUDE.md`; si no nombra ninguno,
+   `out/VIDEOS.md`), y en ese momento se anota ahí: número, título del video, slug y enlaces a
+   `out/NNN-<slug>/` y `guiones/<slug>/`, y se sube el siguiente libre. El número queda fijo aunque
+   cambie el título. Antes de crear, buscar si ya existe `out/*-<slug>/`: si existe, se usa esa.
+   En todo este skill, `out/<slug>/` significa esa carpeta numerada. `guiones/<slug>/` y los
+   nombres de los archivos de adentro (`<slug>.mp4`, `<slug>-short.mp4`…) no llevan número.
 
 ## 1. Modos
 
@@ -33,8 +44,8 @@ Pedido: `$ARGUMENTS`
 | `noticia <url> [--carrusel]` 💲 | De un anuncio de IA a un Short publicado el mismo día (velocidad en noticias) | URL → guion corto, Short 9:16, portadas, textos por red en `out/<slug>/` | §3.7 |
 | `guion <slug\|tema>` | Guion largo por bloques con cifras verificadas + gancho del Short + plan de sonidos y de medios | → `guiones/<slug>/guion.md`, `sonidos.md`, `medios.md` | §3.2, `flujo-video.md` paso 1 |
 | `voz <slug>` 💲 | Locución con tu voz o tu clon en ElevenLabs (`with-timestamps`; con un clon, probar `eleven_v4` vs `eleven_v3`) | guion → `assets/audio/NN.mp3` + `NN.words.json` | `flujo-video.md` paso 2 |
-| `largo <slug>` | Video principal 16:9 (8-14 min) | guion + voz → `out/<slug>/largo/<slug>.mp4` | `flujo-video.md` pasos 3-10, `recetas.md` |
-| `short <slug>` | Short 9:16 nativo (< 60 s) con el gancho del largo | → `out/<slug>/short/<slug>-short.mp4` | `flujo-video.md` paso 11, `recetas.md` |
+| `largo <slug>` | Video principal 16:9 (8-14 min) | guion + voz → `out/NNN-<slug>/largo/<slug>.mp4` | `flujo-video.md` pasos 3-10, `recetas.md` |
+| `short <slug>` | Short 9:16 nativo (< 60 s) con el gancho del largo | → `out/NNN-<slug>/short/<slug>-short.mp4` | `flujo-video.md` paso 11, `recetas.md` |
 | `carrusel <slug> [--personaje]` | Carrusel 4:5 para IG/LinkedIn/Facebook | → `out/<slug>/carrusel/slide-*.png` | `carrusel.md` |
 | `cover-large <slug>` | Miniatura del largo 1280×720 | título elegido → `out/<slug>/largo/miniatura.png` | `publicacion.md`, §3.3 |
 | `cover-short <slug>` | Portadas del Short por red (YT Shorts, TikTok, Reels, cuadrícula IG) | → `out/<slug>/short/portada-*.png` | `publicacion.md`, §3.3 |
@@ -48,11 +59,13 @@ Pedido: `$ARGUMENTS`
 | `presentador <slug>` | Poses del personaje + bocas para sincronizar | → `guiones/<slug>/assets/img/pj-*.png` | `flujo-video.md` paso 4 |
 | `revisar <slug> [largo\|short]` | Control de calidad antes de entregar | → lista de fallas con segundo y escena | §3.4 |
 | `auditar <slug> [largo\|short\|carrusel\|todo]` | Auditoría de lo entregado (mp4 y láminas, no el proyecto): parpadeos, textos que no se alcanzan a leer, sonidos que tapan la voz, cifras contra mediciones independientes, láminas con texto encogido o cortado | → `out/<slug>/AUDITORIA.md` con dónde, falla, gravedad y corrección | `auditoria.md` |
+| `ui-kit [slug\|pieza] [--actualizar]` | Estándar de colores del canal por roles (fondos, texto, énfasis, ranuras del tema), con contraste verificado; sin pieza, entrevista al creador | pieza → `identidad/ui-kit.css` + `ui-kit.md` + `ui-kit.html` (lámina para aprobar) | `ui-kit.md` |
 | `estado <slug>` | Qué hay hecho y qué falta del tema | → tabla de piezas con ✔/✘ y el siguiente modo a correr | §3.5 |
 
 Referencias: `references/flujo-video.md` (producción), `references/publicacion.md` (paquete y
 títulos), `references/medios.md` (scraping e imágenes IA), `references/recetas.md` (código de cada
-movimiento), `references/auditoria.md` (auditoría de lo entregado). Rutas relativas a la carpeta del skill (`<skill>` = `~/.claude/skills/edwin-motion/` o
+movimiento), `references/auditoria.md` (auditoría de lo entregado), `references/ui-kit.md` (estándar
+de colores). Rutas relativas a la carpeta del skill (`<skill>` = `~/.claude/skills/edwin-motion/` o
 `.claude/skills/edwin-motion/` del proyecto); los comandos se corren desde la raíz del proyecto.
 
 ## 2. Principios de movimiento (no negociables, todos los modos que animan)
@@ -86,6 +99,13 @@ escribir la primera escena. Requisitos completos en `README.md`.
    el guion la nombra. Gráficas sin datos reales se marcan "ilustrativo".
 8. **Medios reales como prueba, no como relleno** (`medios.md`): entran como objeto del lenguaje
    (tarjeta, marco de navegador, página que cae) y siempre con crédito visible.
+9. **Imagen limpia, sin efectos que degraden.** Nada de grano, ruido, líneas de TV/CRT, VHS,
+   aberración cromática ni capas encima de toda la escena: ensucian las capturas y el texto, y la
+   compresión de YouTube las empeora. La textura, si hace falta, va en el fondo, nunca sobre los medios.
+10. **El presentador abre y cierra.** Si el video (largo o Short) usa personaje, la **primera
+    escena** lo muestra junto al gancho (entra con rebote en la primera palabra fuerte, sin tapar la
+    cifra ni el titular) y la **última escena** cierra con él y el CTA, como hasta ahora. En el
+    medio aparece donde el tema lo pida. Sin personaje, la regla no aplica.
 
 | Técnica | Qué la define (movimiento) | Libre por video |
 |---|---|---|
@@ -202,7 +222,8 @@ explica en ese archivo; nunca se rellena para terminar.
 - Usar medios con licencia "por confirmar" o sin fuente: se descartan.
 
 **Cadena** (los modos de siempre, en orden; trabajos largos —escenas, renders— en segundo plano o
-repartidos entre agentes como dice `flujo-video.md`):
+repartidos entre agentes como dice `flujo-video.md`; todo subagente de escenas, verificación o
+revisión se lanza con `model: "sonnet"`):
 1. **Tema.** Idea libre → slug kebab-case, agregar a `TEMAS.md` marcado `[x]` con "(auto)". Si no
    aparecen al menos 2 fuentes primarias que sostengan el tema, parar: sin material no hay video.
 2. **`guion`** (§3.2) con duración según el material (8-14 min). Después, **verificación

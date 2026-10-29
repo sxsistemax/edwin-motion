@@ -1,0 +1,22 @@
+{
+  "slug": "mi-app-menu",
+  "url": "https://dev.mi-app.test",
+  "titulo": "MI APLICACIÓN",
+  "subtitulo": "Cómo entrar y moverte por el menú",
+  "marca": "MI APLICACIÓN · ENTORNO DE PRUEBAS",
+  "cierre": { "titulo": "YA SABES MOVERTE", "subtitulo": "Entrar · Ventas · Ajustes" },
+  "colores": { "fondo": "#0d2233", "acento": "#f39200", "texto2": "#8cbf3f" },
+  "pasos": [
+    { "titulo": "Entrar", "foco": [800, 470, 1.55], "desde": "inicio",
+      "acciones": [{ "ir": "/login" }],
+      "voz": "" },
+    { "titulo": "Correo y contraseña", "foco": [800, 470, 1.55], "desde": "inicio",
+      "acciones": [
+        { "clic": "input[type=email]", "etiqueta": "Tu correo" }, { "escribir": "input[type=email]", "env": "TUT_USER" },
+        { "clic": "input[type=password]", "etiqueta": "Tu contraseña" }, { "escribir": "input[type=password]", "env": "TUT_PASS" }],
+      "voz": "" },
+    { "titulo": "Inicio",
+      "acciones": [{ "clic": "button[type=submit]", "etiqueta": "Entrar" }],
+      "voz": "" }
+  ]
+}

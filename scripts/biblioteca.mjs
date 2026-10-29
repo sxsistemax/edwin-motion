@@ -12,12 +12,13 @@ import path from "path";
 import os from "os";
 import crypto from "crypto";
 import { fileURLToPath } from "url";
+import { carpetaGuion } from "./carpeta.mjs";
 
 const SKILL_SFX = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../assets/sfx");
 const MEDIAUSE_SFX = path.join(os.homedir(), ".claude/skills/media-use/audio/assets/sfx");
 const rel = (p) => path.relative(process.cwd(), p).replaceAll("\\", "/");
 const hash = (p) => crypto.createHash("sha1").update(fs.readFileSync(p)).digest("hex").slice(0, 12);
-const slugDe = (p) => rel(p).split("/")[1];
+const slugDe = (p) => rel(p).split("/")[1].replace(/^\d{8}-/, "");
 
 function recorrer(dir, filtro, salida = []) {
   if (!fs.existsSync(dir)) return salida;
@@ -91,7 +92,7 @@ if (!cmd) {
   const i = items.find((x) => x.archivo === a.replaceAll("\\", "/")) ?? items.find((x) => x.id === hash(a));
   if (!i) throw new Error(`${a} no está en la biblioteca (correr medios.mjs o imagen.mjs primero)`);
   if (i.tipo === "musica") throw new Error("Las camas no se reutilizan: cada video lleva cama nueva (modo musica)");
-  const destDir = path.resolve("guiones", b, i.tipo === "sfx" ? "assets/sfx" : "assets/medios");
+  const destDir = path.join(carpetaGuion(b), i.tipo === "sfx" ? "assets/sfx" : "assets/medios");
   fs.mkdirSync(destDir, { recursive: true });
   const destino = path.join(destDir, path.basename(i.archivo));
   fs.copyFileSync(i.archivo, destino);

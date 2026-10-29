@@ -1,0 +1,7 @@
+{
+  "name": "edwin-tutorial",
+  "private": true,
+  "type": "module",
+  "description": "Tutoriales de software: grabación con Playwright + voz + capas en HyperFrames",
+  "dependencies": { "playwright": "1.56.1" }
+}
