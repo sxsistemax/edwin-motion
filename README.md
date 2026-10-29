@@ -116,9 +116,10 @@ congela en su último cuadro hasta que la voz termina, así nunca se desfasa.
 |---|---|---|
 | `/edwin-tutorial <url> [slug]` | Explora el sitio, arma `tutorial.json` con los pasos, graba, narra, monta, revisa y renderiza. Las credenciales van solo en variables de entorno (`TUT_USER`, `TUT_PASS`), nunca en archivos. | `render/<slug>.mp4` + `tutorial.json` para regenerarlo |
 
-Instalación: viene con el repositorio; enlaza o copia `edwin-tutorial/` como skill propio
-(`~/.claude/skills/edwin-tutorial`), corre `npm i` dentro de esa carpeta y, para la voz local,
-`pip install kokoro-onnx soundfile`. Detalle y formato de `tutorial.json` en `edwin-tutorial/SKILL.md`.
+Instalación: viene con el repositorio; **enlaza** (no copies sola) la carpeta `edwin-tutorial/` como
+skill propio (`~/.claude/skills/edwin-tutorial`), porque usa las fuentes, sonidos y voz de esta carpeta;
+corre `npm i` dentro de ella y, para la voz local, `pip install kokoro-onnx soundfile`. Guía completa,
+formato de `tutorial.json` y comandos en [`edwin-tutorial/README.md`](edwin-tutorial/README.md).
 
 ## Qué necesitas
 
@@ -130,6 +131,7 @@ Instalación: viene con el repositorio; enlaza o copia `edwin-tutorial/` como sk
 | [GSAP](https://gsap.com) | Animación (lo carga cada escena) | Gratis |
 | [Node.js](https://nodejs.org) 20+ | Correr los scripts (`npx tsx` para los .ts) | Gratis |
 | [ffmpeg](https://ffmpeg.org) | Audio, recortes | Gratis |
+| [Playwright](https://playwright.dev) + [Kokoro](https://github.com/thewh1teagle/kokoro-onnx) (opcional) | Solo para `edwin-tutorial`: grabar el navegador y voz local | Gratis |
 | [Google Chrome](https://www.google.com/chrome/) | Sonido automático y capturas de portadas | Gratis |
 | [Python](https://www.python.org) + [Pillow](https://python-pillow.org) | Solo si usas presentador con personaje | Gratis |
 | [MusicGen](https://huggingface.co/facebook/musicgen-small) (opcional) | Música de fondo local, vía el skill `media-use` de HyperFrames | Gratis |
