@@ -32,6 +32,15 @@
   .hl { color: var(--acento); }
   .gancho .hl { color: var(--tinta); background: linear-gradient(transparent 6%, var(--acento) 6%, var(--acento) 94%, transparent 94%); padding: 0 .1em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 
+  /* Filas de códigos: número + código + qué hace (listas largas, 8-12 por lámina) */
+  .cods { display: flex; flex-direction: column; gap: calc(var(--k) * 14px); }
+  .cod { display: flex; align-items: center; gap: calc(var(--k) * 20px); background: #fff; color: var(--tinta); border: 4px solid var(--tinta); border-radius: 14px;
+    box-shadow: 7px 7px 0 var(--acento); padding: calc(var(--k) * 10px) calc(var(--k) * 20px); font-size: calc(var(--k) * 32px); font-weight: 900; line-height: 1.12; white-space: normal; }
+  .cod .n { flex: none; }
+  .cod .c { flex: none; }
+  .cod .n { font-family: "Anton", sans-serif; font-weight: 400; font-size: calc(var(--k) * 46px); color: var(--acento); min-width: 2ch; text-align: right; }
+  .cod .c { font-family: "JBM", monospace; font-weight: 700; font-size: calc(var(--k) * 30px); background: var(--amarillo); border: 3px solid var(--tinta); border-radius: 8px; padding: 0 calc(var(--k) * 12px); }
+  .cod:nth-child(even) .c { background: var(--acento); }
   /* Tarjetas brutalistas (tablero / recibo) */
   .tarjetas { display: flex; flex-direction: column; gap: calc(var(--k) * 22px); }
   .tarj { display: flex; align-items: center; gap: calc(var(--k) * 24px); background: #fff; color: var(--tinta); border: 5px solid var(--tinta); border-radius: 18px;
@@ -111,6 +120,7 @@ fetch(new URL("carrusel.json", base)).then((r) => r.json()).then((c) => {
         ? tarjetas(sl.points, (p) => `<div class="tarj ${p.type === "minus" ? "menos" : ""}"><span class="ck">${p.type === "minus" ? "✕" : "✓"}</span>${br(p.text)}</div>`)
         : parrafo);
       break;
+    case "codes": h = (sl.title ? titulo : "") + `<div class="cods">${sl.items.map((it) => `<div class="cod"><span class="n">${esc(it.n)}</span><span class="c">${esc(it.code)}</span><span>${esc(it.text)}</span></div>`).join("")}</div>`; break;
     case "list": h = badge + titulo + tarjetas(sl.items, (it, i) => `<div class="tarj"><span class="n">${i + 1}</span>${br(it)}</div>`); break;
     case "checklist": h = badge + titulo + tarjetas(sl.items, (it) => `<div class="tarj"><span class="ck">✓</span>${br(it)}</div>`); break;
     case "process": h = badge + titulo + tarjetas(sl.steps, (p, i) => `<div class="tarj paso"><span class="n">${i + 1}</span><div>${esc(p.title)}<small>${br(p.text)}</small></div></div>`); break;

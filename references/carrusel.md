@@ -68,6 +68,7 @@ orden → `process`; antes/después o dos opciones → `comparison`; ventajas/de
 | `comparison` | `leftLabel`, `leftItems`, `rightLabel`, `rightItems` | etiquetas ≤ 14; 3 ítems por lado de ≤ 38, enfrentados uno a uno |
 | `number` | `bigNumber`, `title`, `text` | ≤ 5 car. ("0,44", "24h"); título ≤ 36; texto ≤ 130 |
 | `stats` | `title`, `stats` [{`value`, `label`}] | 2-3; valor ≤ 6, etiqueta ≤ 22. Solo cifras verificadas |
+| `codes` | `title`?, `items` [{`n`, `code`, `text`}] | Listas largas de atajos o comandos: 8-12 filas por lámina (número, código en mono, qué hace); probado con 11 filas, `code` ≤ 15 car. y `text` ≤ 42. Es la excepción a "una idea por lámina" y a los 3-4 ítems; no cuenta para la variedad de las 5 de contenido |
 | `quote` | `text`, `author`, `role` | ≤ 110; nunca una cita inventada |
 | `cta` | `text`, `highlight`, `handle`? | ≤ 70, 2-4 líneas. **Acción + para qué** ("Comenta SKILL y te envío gratis el skill…"), nunca "Sígueme para más" |
 
