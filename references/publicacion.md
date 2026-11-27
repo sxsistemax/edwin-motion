@@ -16,6 +16,8 @@ Paso 12 del flujo.
     - **Solo dos videos por tema: largo (16:9) y Short (9:16).** El mismo Short 9:16 va a YouTube Shorts,
       TikTok, Instagram Reels y Facebook. **No** se hace versión 1:1 ni 4:5 para Instagram ni carpeta
       `short-instagram/` (el 1:1 sale de subir mal el video, no de una necesidad de la red).
+    **Descripción del largo en YouTube: siempre con los capítulos pegados** (el contenido de
+    `capitulos.txt`, empezando en `0:00`), nunca un "(pegar capítulos aquí)": el creador copia y pega tal cual.
     Textos por red (YouTube, LinkedIn, Shorts, TikTok, Reels, Facebook) sin afirmar que algo se probó si
     fue ilustrativo y sin prometer cosas a nombre del creador.
     **TikTok:** el texto no nombra YouTube ni manda a enlaces fuera de TikTok ("enlace en el perfil",

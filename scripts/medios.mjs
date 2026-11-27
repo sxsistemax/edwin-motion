@@ -75,10 +75,20 @@ if (tipo === "foto") {
   const [w, h, s] = [op.ancho ?? 1920, op.alto ?? 1080, op.escala ?? 1];
   fs.rmSync(destino, { force: true });
   const listo = () => { for (let i = 0; i < 20 && !fs.existsSync(destino); i++) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); return fs.existsSync(destino); };
-  for (let intento = 0; intento < 3 && !listo(); intento++)  // Chrome a veces escribe tarde o no escribe la captura (igual que capturar.mjs)
-    execFileSync(CHROME, ["--headless=new", `--user-data-dir=${path.join(os.tmpdir(), "chrome-medios-" + process.pid + "-" + intento)}`,
-      "--disable-gpu", "--hide-scrollbars", "--virtual-time-budget=10000", `--window-size=${w},${h}`, `--force-device-scale-factor=${s}`,
-      `--user-agent=${UA}`, `--screenshot=${destino}`, origen], { stdio: "ignore" });
+  for (let intento = 0; intento < 3 && !listo(); intento++) {  // Chrome a veces escribe tarde o no escribe la captura (igual que capturar.mjs)
+    const perfil = path.join(os.tmpdir(), "chrome-medios-" + process.pid + "-" + intento);
+    try {
+      execFileSync(CHROME, ["--headless=new", `--user-data-dir=${perfil}`,
+        "--disable-gpu", "--hide-scrollbars", "--virtual-time-budget=10000", `--window-size=${w},${h}`, `--force-device-scale-factor=${s}`,
+        `--user-agent=${UA}`, `--screenshot=${destino}`, origen], { stdio: "ignore", timeout: 60000 });
+    } catch { /* timeout o salida rara: se reintenta */ }
+    finally {
+      // Chrome headless a veces deja el proceso padre vivo (~225 MB c/u): matar por perfil y borrar el perfil
+      try { execFileSync("powershell", ["-NoProfile", "-Command",
+        `Get-CimInstance Win32_Process -Filter "Name='chrome.exe'" | Where-Object { $_.CommandLine -like '*${perfil.replace(/'/g, "''")}*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }`], { stdio: "ignore" }); } catch {}
+      fs.rmSync(perfil, { recursive: true, force: true, maxRetries: 3, retryDelay: 300 });
+    }
+  }
   if (!fs.existsSync(destino)) throw new Error("Chrome no escribió la captura (página con login/cookies: usar Playwright)");
   anotar([destino]);
 } else if (tipo === "documento") {
